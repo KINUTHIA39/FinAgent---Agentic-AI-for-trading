@@ -1,0 +1,5 @@
+recall_profile,max_position_pct,reduce_only,circuit_breaker,halt_new_longs,slippage_guard_bps,n_flagged_symbols
+none,0.053,0.0,0.003,0.0,8.409,0.0
+mixed,0.057,0.0,0.0,0.0,9.808,0.013
+winners,0.047,0.0,0.007,0.0,6.993,0.0
+losers,0.034,0.0,0.003,0.0,9.638,0.35

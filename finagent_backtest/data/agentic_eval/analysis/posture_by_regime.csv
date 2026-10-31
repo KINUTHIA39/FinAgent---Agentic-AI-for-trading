@@ -1,0 +1,5 @@
+regime,max_position_pct,reduce_only,circuit_breaker,halt_new_longs,slippage_guard_bps,n_flagged_symbols
+bull-calm,0.069,0.0,0.003,0.0,8.595,0.07
+bull-stress,0.061,0.0,0.003,0.0,8.83,0.06
+bear-calm,0.038,0.0,0.0,0.0,8.285,0.167
+bear-stress,0.033,0.0,0.007,0.0,8.239,0.067

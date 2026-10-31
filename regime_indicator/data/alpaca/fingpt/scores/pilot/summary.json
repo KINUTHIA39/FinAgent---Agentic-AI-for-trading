@@ -1,0 +1,14 @@
+{
+ "scored": 2002,
+ "label_share": {
+  "neutral": 0.447,
+  "positive": 0.295,
+  "negative": 0.258
+ },
+ "score_mean": 0.039,
+ "label_mass_median": 1.0,
+ "label_mass_p05": 0.038,
+ "validate_n": 256,
+ "agree": 0.95703125,
+ "unparsed": 0.01953125
+}

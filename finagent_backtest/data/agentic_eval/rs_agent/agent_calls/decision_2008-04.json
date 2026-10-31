@@ -1,0 +1,25 @@
+{
+  "date": "2008-04",
+  "model": "claude-sonnet-4-6",
+  "briefing": "## RS allocation cycle 2008-04\n\nYou are setting the decision parameters for a regime-switching optimal\nportfolio (Markose & Yang). The optimiser itself is fixed and will run\nwhatever you specify. Your job is to judge how far the model should be\ntrusted this month, given the diagnostics below.\n\n### Regime filter\n- Label this month: **bull**\n- P(bull) now: 0.92\n- P(bull) last 6 months (oldest first): 0.93, 0.94, 0.83, 0.81, 0.87, 0.92\n- Label changes in that window: 0\n\n### Conditional moments the optimiser would use (Eqs. 15-16)\n- If bull: mean +0.884%/mo, sd 4.07%/mo\n- If bear: mean -1.010%/mo, sd 5.34%/mo\n- Separation between the two states: 1.895 percentage points of monthly mean\n\n### Estimation health (CAPM, point-in-time)\n- Months of history used: 39\n- Mean R-squared across the eight stocks: 0.24\n- Beta range: 0.29 to 3.17\n- Largest beta move since last month: AAPL -0.04\n\n### What the optimiser wants before any cap\n- Largest single position: AAPL at 30%\n- Gross exposure: 70%\n- Names above 20%: 1\n\n### How this model's recent decisions turned out\n- Last 3 months: mean -6.37%/mo, 1 of 3 positive\n- Most recent month: +0.44%\n\n### Decide\nSet `gamma` (higher is more risk averse), `regime_treatment`\n(`hard_label` follows the filter, `probability_blend` weights both\nstates by P(bull)), and `max_position_pct` (a fraction; 1.00 is no cap).\nReply with the JSON object only.",
+  "raw_text": "{\"gamma\":8,\"regime_treatment\":\"hard_label\",\"max_position_pct\":0.25,\"rationale\":\"The filter is stable and confident (P(bull)=0.92, no label changes), so hard_label is appropriate. However, the low mean R-squared (0.24) and very wide beta range (0.29-3.17) indicate weak CAPM fit and unreliable moment estimates, and recent performance has been poor (-6.37%/mo over 3 months). Raising gamma to 8 and capping the largest position at 25% (trimming AAPL's 30% unconstrained weight) reduces concentration risk given the estimation uncertainty.\"}",
+  "raw_parsed": {
+    "gamma": 8,
+    "regime_treatment": "hard_label",
+    "max_position_pct": 0.25,
+    "rationale": "The filter is stable and confident (P(bull)=0.92, no label changes), so hard_label is appropriate. However, the low mean R-squared (0.24) and very wide beta range (0.29-3.17) indicate weak CAPM fit and unreliable moment estimates, and recent performance has been poor (-6.37%/mo over 3 months). Raising gamma to 8 and capping the largest position at 25% (trimming AAPL's 30% unconstrained weight) reduces concentration risk given the estimation uncertainty."
+  },
+  "accepted": true,
+  "reject_reason": "",
+  "posture": {
+    "gamma": 8.0,
+    "regime_treatment": "hard_label",
+    "max_position_pct": 0.25,
+    "rationale": "The filter is stable and confident (P(bull)=0.92, no label changes), so hard_label is appropriate. However, the low mean R-squared (0.24) and very wide beta range (0.29-3.17) indicate weak CAPM fit and unreliable moment estimates, and recent performance has been poor (-6.37%/mo over 3 months). Raising gamma to 8 and capping the largest position at 25% (trimming AAPL's 30% unconstrained weight) red"
+  },
+  "usage": {
+    "input_tokens": 1045,
+    "output_tokens": 158,
+    "latency_ms": 6441.6
+  }
+}

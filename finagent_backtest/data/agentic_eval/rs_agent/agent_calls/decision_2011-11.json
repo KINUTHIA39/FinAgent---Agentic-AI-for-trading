@@ -1,0 +1,25 @@
+{
+  "date": "2011-11",
+  "model": "claude-sonnet-4-6",
+  "briefing": "## RS allocation cycle 2011-11\n\nYou are setting the decision parameters for a regime-switching optimal\nportfolio (Markose & Yang). The optimiser itself is fixed and will run\nwhatever you specify. Your job is to judge how far the model should be\ntrusted this month, given the diagnostics below.\n\n### Regime filter\n- Label this month: **bull**\n- P(bull) now: 0.69\n- P(bull) last 6 months (oldest first): 0.95, 0.95, 0.86, 0.61, 0.54, 0.69\n- Label changes in that window: 0\n\n### Conditional moments the optimiser would use (Eqs. 15-16)\n- If bull: mean +0.884%/mo, sd 4.07%/mo\n- If bear: mean -1.010%/mo, sd 5.34%/mo\n- Separation between the two states: 1.895 percentage points of monthly mean\n\n### Estimation health (CAPM, point-in-time)\n- Months of history used: 82\n- Mean R-squared across the eight stocks: 0.31\n- Beta range: 0.51 to 1.73\n- Largest beta move since last month: AMZN -0.10\n\n### What the optimiser wants before any cap\n- Largest single position: AAPL at 53%\n- Gross exposure: 100%\n- Names above 20%: 2\n\n### How this model's recent decisions turned out\n- Last 12 months: mean +1.32%/mo, 7 of 12 positive\n- Most recent month: +2.35%\n\n### Decide\nSet `gamma` (higher is more risk averse), `regime_treatment`\n(`hard_label` follows the filter, `probability_blend` weights both\nstates by P(bull)), and `max_position_pct` (a fraction; 1.00 is no cap).\nReply with the JSON object only.",
+  "raw_text": "{\"gamma\":8,\"regime_treatment\":\"probability_blend\",\"max_position_pct\":0.25,\"rationale\":\"P(bull) has drifted down from 0.95 to 0.69 over six months and the filter is notably uncertain, so probability_blend is safer than committing to the bull label. The optimiser wants 53% in a single name with two positions above 20%, which is aggressive given a low mean R-squared of 0.31; a 25% cap and higher risk aversion of 8 temper concentration risk without abandoning the generally positive recent performance.\"}",
+  "raw_parsed": {
+    "gamma": 8,
+    "regime_treatment": "probability_blend",
+    "max_position_pct": 0.25,
+    "rationale": "P(bull) has drifted down from 0.95 to 0.69 over six months and the filter is notably uncertain, so probability_blend is safer than committing to the bull label. The optimiser wants 53% in a single name with two positions above 20%, which is aggressive given a low mean R-squared of 0.31; a 25% cap and higher risk aversion of 8 temper concentration risk without abandoning the generally positive recent performance."
+  },
+  "accepted": true,
+  "reject_reason": "",
+  "posture": {
+    "gamma": 8.0,
+    "regime_treatment": "probability_blend",
+    "max_position_pct": 0.25,
+    "rationale": "P(bull) has drifted down from 0.95 to 0.69 over six months and the filter is notably uncertain, so probability_blend is safer than committing to the bull label. The optimiser wants 53% in a single name with two positions above 20%, which is aggressive given a low mean R-squared of 0.31; a 25% cap and higher risk aversion of 8 temper concentration risk without abandoning the generally positive rece"
+  },
+  "usage": {
+    "input_tokens": 1045,
+    "output_tokens": 137,
+    "latency_ms": 4489.3
+  }
+}

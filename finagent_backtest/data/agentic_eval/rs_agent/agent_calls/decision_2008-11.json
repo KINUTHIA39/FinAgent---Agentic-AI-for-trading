@@ -1,0 +1,25 @@
+{
+  "date": "2008-11",
+  "model": "claude-sonnet-4-6",
+  "briefing": "## RS allocation cycle 2008-11\n\nYou are setting the decision parameters for a regime-switching optimal\nportfolio (Markose & Yang). The optimiser itself is fixed and will run\nwhatever you specify. Your job is to judge how far the model should be\ntrusted this month, given the diagnostics below.\n\n### Regime filter\n- Label this month: **bear**\n- P(bull) now: 0.04\n- P(bull) last 6 months (oldest first): 0.67, 0.77, 0.86, 0.43, 0.00, 0.04\n- Label changes in that window: 1\n\n### Conditional moments the optimiser would use (Eqs. 15-16)\n- If bull: mean +0.884%/mo, sd 4.07%/mo\n- If bear: mean -1.010%/mo, sd 5.34%/mo\n- Separation between the two states: 1.895 percentage points of monthly mean\n\n### Estimation health (CAPM, point-in-time)\n- Months of history used: 46\n- Mean R-squared across the eight stocks: 0.26\n- Beta range: 0.47 to 2.21\n- Largest beta move since last month: AAPL -1.03\n\n### What the optimiser wants before any cap\n- Largest single position: AAPL at 14%\n- Gross exposure: 24%\n- Names above 20%: 0\n\n### How this model's recent decisions turned out\n- Last 10 months: mean -1.65%/mo, 4 of 10 positive\n- Most recent month: -0.93%\n\n### Decide\nSet `gamma` (higher is more risk averse), `regime_treatment`\n(`hard_label` follows the filter, `probability_blend` weights both\nstates by P(bull)), and `max_position_pct` (a fraction; 1.00 is no cap).\nReply with the JSON object only.",
+  "raw_text": "{\"gamma\":9,\"regime_treatment\":\"hard_label\",\"max_position_pct\":0.25,\"rationale\":\"The filter is clear and confident in bear (P(bull)=0.04 after a definitive transition), so hard_label is appropriate rather than blending. However, the low R-squared (0.26), the very large AAPL beta shift (-1.03), and persistent poor realized returns (-1.65%/mo over 10 months warrant elevated risk aversion (gamma=9) and a modest position cap (25%) to guard against estimation error in an already-defensive, low-gross-exposure portfolio.\"}",
+  "raw_parsed": {
+    "gamma": 9,
+    "regime_treatment": "hard_label",
+    "max_position_pct": 0.25,
+    "rationale": "The filter is clear and confident in bear (P(bull)=0.04 after a definitive transition), so hard_label is appropriate rather than blending. However, the low R-squared (0.26), the very large AAPL beta shift (-1.03), and persistent poor realized returns (-1.65%/mo over 10 months warrant elevated risk aversion (gamma=9) and a modest position cap (25%) to guard against estimation error in an already-defensive, low-gross-exposure portfolio."
+  },
+  "accepted": true,
+  "reject_reason": "",
+  "posture": {
+    "gamma": 9.0,
+    "regime_treatment": "hard_label",
+    "max_position_pct": 0.25,
+    "rationale": "The filter is clear and confident in bear (P(bull)=0.04 after a definitive transition), so hard_label is appropriate rather than blending. However, the low R-squared (0.26), the very large AAPL beta shift (-1.03), and persistent poor realized returns (-1.65%/mo over 10 months warrant elevated risk aversion (gamma=9) and a modest position cap (25%) to guard against estimation error in an already-de"
+  },
+  "usage": {
+    "input_tokens": 1045,
+    "output_tokens": 145,
+    "latency_ms": 5076.9
+  }
+}

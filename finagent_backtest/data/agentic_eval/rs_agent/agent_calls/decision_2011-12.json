@@ -1,0 +1,25 @@
+{
+  "date": "2011-12",
+  "model": "claude-sonnet-4-6",
+  "briefing": "## RS allocation cycle 2011-12\n\nYou are setting the decision parameters for a regime-switching optimal\nportfolio (Markose & Yang). The optimiser itself is fixed and will run\nwhatever you specify. Your job is to judge how far the model should be\ntrusted this month, given the diagnostics below.\n\n### Regime filter\n- Label this month: **bull**\n- P(bull) now: 0.81\n- P(bull) last 6 months (oldest first): 0.95, 0.86, 0.61, 0.54, 0.69, 0.81\n- Label changes in that window: 0\n\n### Conditional moments the optimiser would use (Eqs. 15-16)\n- If bull: mean +0.884%/mo, sd 4.07%/mo\n- If bear: mean -1.010%/mo, sd 5.34%/mo\n- Separation between the two states: 1.895 percentage points of monthly mean\n\n### Estimation health (CAPM, point-in-time)\n- Months of history used: 83\n- Mean R-squared across the eight stocks: 0.30\n- Beta range: 0.51 to 1.73\n- Largest beta move since last month: AMZN +0.00\n\n### What the optimiser wants before any cap\n- Largest single position: AAPL at 51%\n- Gross exposure: 100%\n- Names above 20%: 1\n\n### How this model's recent decisions turned out\n- Last 12 months: mean +1.00%/mo, 6 of 12 positive\n- Most recent month: -2.27%\n\n### Decide\nSet `gamma` (higher is more risk averse), `regime_treatment`\n(`hard_label` follows the filter, `probability_blend` weights both\nstates by P(bull)), and `max_position_pct` (a fraction; 1.00 is no cap).\nReply with the JSON object only.",
+  "raw_text": "{\"gamma\":8,\"regime_treatment\":\"probability_blend\",\"max_position_pct\":0.25,\"rationale\":\"The filter P(bull) drifted from 0.95 down to 0.54 and back to 0.81 over six months, signalling instability that warrants probability_blend rather than hard_label commitment. The CAPM fit is weak (mean R\u00b2=0.30) and the optimiser wants 51% in a single name, so a tighter cap of 25% and higher risk aversion of 8 are appropriate to guard against model error amplification, especially given the most recent month's -2.27% return.\"}",
+  "raw_parsed": {
+    "gamma": 8,
+    "regime_treatment": "probability_blend",
+    "max_position_pct": 0.25,
+    "rationale": "The filter P(bull) drifted from 0.95 down to 0.54 and back to 0.81 over six months, signalling instability that warrants probability_blend rather than hard_label commitment. The CAPM fit is weak (mean R\u00b2=0.30) and the optimiser wants 51% in a single name, so a tighter cap of 25% and higher risk aversion of 8 are appropriate to guard against model error amplification, especially given the most recent month's -2.27% return."
+  },
+  "accepted": true,
+  "reject_reason": "",
+  "posture": {
+    "gamma": 8.0,
+    "regime_treatment": "probability_blend",
+    "max_position_pct": 0.25,
+    "rationale": "The filter P(bull) drifted from 0.95 down to 0.54 and back to 0.81 over six months, signalling instability that warrants probability_blend rather than hard_label commitment. The CAPM fit is weak (mean R\u00b2=0.30) and the optimiser wants 51% in a single name, so a tighter cap of 25% and higher risk aversion of 8 are appropriate to guard against model error amplification, especially given the most rece"
+  },
+  "usage": {
+    "input_tokens": 1045,
+    "output_tokens": 153,
+    "latency_ms": 4411.9
+  }
+}

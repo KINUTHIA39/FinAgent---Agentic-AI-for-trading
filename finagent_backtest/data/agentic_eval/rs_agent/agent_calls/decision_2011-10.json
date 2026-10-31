@@ -1,0 +1,25 @@
+{
+  "date": "2011-10",
+  "model": "claude-sonnet-4-6",
+  "briefing": "## RS allocation cycle 2011-10\n\nYou are setting the decision parameters for a regime-switching optimal\nportfolio (Markose & Yang). The optimiser itself is fixed and will run\nwhatever you specify. Your job is to judge how far the model should be\ntrusted this month, given the diagnostics below.\n\n### Regime filter\n- Label this month: **bull**\n- P(bull) now: 0.54\n- P(bull) last 6 months (oldest first): 0.96, 0.95, 0.95, 0.86, 0.61, 0.54\n- Label changes in that window: 0\n\n### Conditional moments the optimiser would use (Eqs. 15-16)\n- If bull: mean +0.884%/mo, sd 4.07%/mo\n- If bear: mean -1.010%/mo, sd 5.34%/mo\n- Separation between the two states: 1.895 percentage points of monthly mean\n\n### Estimation health (CAPM, point-in-time)\n- Months of history used: 81\n- Mean R-squared across the eight stocks: 0.30\n- Beta range: 0.54 to 1.75\n- Largest beta move since last month: JPM +0.05\n\n### What the optimiser wants before any cap\n- Largest single position: AAPL at 55%\n- Gross exposure: 100%\n- Names above 20%: 2\n\n### How this model's recent decisions turned out\n- Last 12 months: mean +1.78%/mo, 7 of 12 positive\n- Most recent month: -0.69%\n\n### Decide\nSet `gamma` (higher is more risk averse), `regime_treatment`\n(`hard_label` follows the filter, `probability_blend` weights both\nstates by P(bull)), and `max_position_pct` (a fraction; 1.00 is no cap).\nReply with the JSON object only.",
+  "raw_text": "{\"gamma\":9,\"regime_treatment\":\"probability_blend\",\"max_position_pct\":0.25,\"rationale\":\"P(bull) has dropped steadily from 0.96 to 0.54 over six months, signaling genuine regime uncertainty; probability_blend is safer than hard_label here. The optimiser wants 55% in a single name with two positions above 20%, so a 25% cap and elevated gamma of 9 are warranted to control concentration risk given weak CAPM fit (R\u00b2=0.30) and the uncertain regime signal.\"}",
+  "raw_parsed": {
+    "gamma": 9,
+    "regime_treatment": "probability_blend",
+    "max_position_pct": 0.25,
+    "rationale": "P(bull) has dropped steadily from 0.96 to 0.54 over six months, signaling genuine regime uncertainty; probability_blend is safer than hard_label here. The optimiser wants 55% in a single name with two positions above 20%, so a 25% cap and elevated gamma of 9 are warranted to control concentration risk given weak CAPM fit (R\u00b2=0.30) and the uncertain regime signal."
+  },
+  "accepted": true,
+  "reject_reason": "",
+  "posture": {
+    "gamma": 9.0,
+    "regime_treatment": "probability_blend",
+    "max_position_pct": 0.25,
+    "rationale": "P(bull) has dropped steadily from 0.96 to 0.54 over six months, signaling genuine regime uncertainty; probability_blend is safer than hard_label here. The optimiser wants 55% in a single name with two positions above 20%, so a 25% cap and elevated gamma of 9 are warranted to control concentration risk given weak CAPM fit (R\u00b2=0.30) and the uncertain regime signal."
+  },
+  "usage": {
+    "input_tokens": 1043,
+    "output_tokens": 130,
+    "latency_ms": 5042.0
+  }
+}

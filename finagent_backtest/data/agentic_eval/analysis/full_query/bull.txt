@@ -1,0 +1,68 @@
+================ BLOCK 1/3: SYSTEM PROMPT (cached) ================
+You are the DAG planner for an agentic hedge-fund trading loop. Read the compressed session state and output a directed-acyclic-graph describing which agents to run this cycle, in what order, and with what parameters.
+
+Return ONE JSON object and nothing else, matching exactly this shape:
+{
+  "nodes": [{"id": "<str>", "type": "<data_fetch|feature|signal|risk|portfolio|execution|audit>", "agent": "<AgentClassName>", "params": {}}],
+  "edges": [{"src": "<node_id>", "dst": "<node_id>"}]
+}
+
+Rules:
+- Every DAG must contain at least one `execution` or `audit` terminal node.
+- No cycles. Every edge must reference declared node ids.
+- Use agent class names from the provided registry.
+- Prefer the canonical stage ordering: data_fetch → feature → signal → risk → portfolio → execution → audit.
+
+================ BLOCK 2/3: AGENT REGISTRY (cached) ===============
+## Agent Registry
+- DataAgent: fetches OHLCV and market state
+- FeatureAgent: computes factor signals
+- AlphaAgent: generates BUY/SELL signals
+- RiskAgent: VaR + exposure checks
+- PortfolioAgent: position sizing
+- ExecutionAgent: places orders
+- AuditAgent: records cycle outcome
+<<< CACHE BOUNDARY: blocks above are byte-stable and served from cache >>>
+============== BLOCK 3/3: SESSION STATE (volatile) ===============
+## Session State (compressed)
+## Current Session Context
+- Cycle ID: bt_201706
+- Timestamp (UTC): 2026-06-30T17:35:44Z
+
+### Portfolio State
+- NAV: $11,744,875.50
+- Cash: $0.00
+- Open positions: 8
+- Daily P&L: -2%
+
+### Market Regime
+- Regime: bull
+- P(bull):     97%
+- P(bear):     3%
+- P(sideways): 0%
+
+### Memory Recall
+=== HISTORICAL CONTEXT FROM KNOWLEDGE GRAPH ===
+
+## Symbol History:
+  - AAPL: | 145 trades | WR: 63% (profitable) | Avg P&L: $+13,805 | Conf: 0.91x
+  - MSFT: | 143 trades | WR: 59% (profitable) | Avg P&L: $+6,636 | Conf: 0.87x
+  - NVDA: | 145 trades | WR: 63% (profitable) | Avg P&L: $+23,625 | Conf: 0.91x
+  - JPM: | 145 trades | WR: 57% (profitable) | Avg P&L: $+5,631 | Conf: 0.86x
+  - AMZN: | 144 trades | WR: 61% (profitable) | Avg P&L: $+11,730 | Conf: 0.89x
+  - GOOGL: | 146 trades | WR: 59% (profitable) | Avg P&L: $+7,374 | Conf: 0.87x
+  - XOM: | 145 trades | WR: 53% (profitable) | Avg P&L: $+1,587 | Conf: 0.82x
+  - JNJ: | 143 trades | WR: 57% (profitable) | Avg P&L: $+5,137 | Conf: 0.85x
+=== END HISTORICAL CONTEXT ===
+
+### Current Candidates (first 10)
+- AAPL: BUY | RSI=0.0 | Score=0.05 | WinRate=63%
+- MSFT: BUY | RSI=0.0 | Score=0.73 | WinRate=59%
+- NVDA: BUY | RSI=0.0 | Score=0.89 | WinRate=63%
+- JPM: BUY | RSI=0.0 | Score=0.34 | WinRate=57%
+- AMZN: BUY | RSI=0.0 | Score=0.67 | WinRate=61%
+- GOOGL: BUY | RSI=0.0 | Score=0.63 | WinRate=59%
+- XOM: BUY | RSI=0.0 | Score=0.27 | WinRate=53%
+- JNJ: BUY | RSI=0.0 | Score=1.00 | WinRate=57%
+
+## Output JSON

@@ -1,0 +1,9 @@
+# Optional: only to re-score headlines with FinBERT (CPU is fine) or to
+# re-tokenise the FinGPT prompts. FinGPT scoring itself runs on a GPU box;
+# infra/hostinger/setup.sh installs its own CUDA build there.
+-r requirements.txt
+torch>=2.3
+transformers>=4.45
+peft>=0.13
+sentencepiece>=0.2
+protobuf>=4.25

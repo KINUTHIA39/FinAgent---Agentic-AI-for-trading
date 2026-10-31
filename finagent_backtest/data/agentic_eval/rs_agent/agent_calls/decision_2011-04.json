@@ -1,0 +1,25 @@
+{
+  "date": "2011-04",
+  "model": "claude-sonnet-4-6",
+  "briefing": "## RS allocation cycle 2011-04\n\nYou are setting the decision parameters for a regime-switching optimal\nportfolio (Markose & Yang). The optimiser itself is fixed and will run\nwhatever you specify. Your job is to judge how far the model should be\ntrusted this month, given the diagnostics below.\n\n### Regime filter\n- Label this month: **bull**\n- P(bull) now: 0.97\n- P(bull) last 6 months (oldest first): 0.89, 0.92, 0.95, 0.96, 0.97, 0.97\n- Label changes in that window: 0\n\n### Conditional moments the optimiser would use (Eqs. 15-16)\n- If bull: mean +0.884%/mo, sd 4.07%/mo\n- If bear: mean -1.010%/mo, sd 5.34%/mo\n- Separation between the two states: 1.895 percentage points of monthly mean\n\n### Estimation health (CAPM, point-in-time)\n- Months of history used: 75\n- Mean R-squared across the eight stocks: 0.31\n- Beta range: 0.54 to 1.74\n- Largest beta move since last month: NVDA +0.00\n\n### What the optimiser wants before any cap\n- Largest single position: AAPL at 50%\n- Gross exposure: 100%\n- Names above 20%: 1\n\n### How this model's recent decisions turned out\n- Last 12 months: mean +2.21%/mo, 8 of 12 positive\n- Most recent month: -3.12%\n\n### Decide\nSet `gamma` (higher is more risk averse), `regime_treatment`\n(`hard_label` follows the filter, `probability_blend` weights both\nstates by P(bull)), and `max_position_pct` (a fraction; 1.00 is no cap).\nReply with the JSON object only.",
+  "raw_text": "{\"gamma\":7,\"regime_treatment\":\"hard_label\",\"max_position_pct\":0.35,\"rationale\":\"The regime filter is stable and high-confidence (P(bull)=0.97, no label changes, steady trend), so hard_label is appropriate and only modest risk-aversion adjustment is needed. However, the optimiser wants 50% in AAPL with low average R-squared (0.31), indicating weak CAPM fit and unreliable alpha estimates, so a position cap of 35% is warranted to limit concentration risk from potentially noisy estimates.\"}",
+  "raw_parsed": {
+    "gamma": 7,
+    "regime_treatment": "hard_label",
+    "max_position_pct": 0.35,
+    "rationale": "The regime filter is stable and high-confidence (P(bull)=0.97, no label changes, steady trend), so hard_label is appropriate and only modest risk-aversion adjustment is needed. However, the optimiser wants 50% in AAPL with low average R-squared (0.31), indicating weak CAPM fit and unreliable alpha estimates, so a position cap of 35% is warranted to limit concentration risk from potentially noisy estimates."
+  },
+  "accepted": true,
+  "reject_reason": "",
+  "posture": {
+    "gamma": 7.0,
+    "regime_treatment": "hard_label",
+    "max_position_pct": 0.35,
+    "rationale": "The regime filter is stable and high-confidence (P(bull)=0.97, no label changes, steady trend), so hard_label is appropriate and only modest risk-aversion adjustment is needed. However, the optimiser wants 50% in AAPL with low average R-squared (0.31), indicating weak CAPM fit and unreliable alpha estimates, so a position cap of 35% is warranted to limit concentration risk from potentially noisy e"
+  },
+  "usage": {
+    "input_tokens": 1044,
+    "output_tokens": 133,
+    "latency_ms": 4337.7
+  }
+}

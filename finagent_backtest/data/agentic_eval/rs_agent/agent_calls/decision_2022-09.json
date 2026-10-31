@@ -1,0 +1,25 @@
+{
+  "date": "2022-09",
+  "model": "claude-sonnet-4-6",
+  "briefing": "## RS allocation cycle 2022-09\n\nYou are setting the decision parameters for a regime-switching optimal\nportfolio (Markose & Yang). The optimiser itself is fixed and will run\nwhatever you specify. Your job is to judge how far the model should be\ntrusted this month, given the diagnostics below.\n\n### Regime filter\n- Label this month: **bear**\n- P(bull) now: 0.09\n- P(bull) last 6 months (oldest first): 0.60, 0.75, 0.34, 0.42, 0.40, 0.09\n- Label changes in that window: 1\n\n### Conditional moments the optimiser would use (Eqs. 15-16)\n- If bull: mean +0.884%/mo, sd 4.07%/mo\n- If bear: mean -1.010%/mo, sd 5.34%/mo\n- Separation between the two states: 1.895 percentage points of monthly mean\n\n### Estimation health (CAPM, point-in-time)\n- Months of history used: 212\n- Mean R-squared across the eight stocks: 0.34\n- Beta range: 0.58 to 1.65\n- Largest beta move since last month: NVDA +0.02\n\n### What the optimiser wants before any cap\n- Largest single position: AAPL at 11%\n- Gross exposure: 13%\n- Names above 20%: 0\n\n### How this model's recent decisions turned out\n- Last 12 months: mean +0.05%/mo, 5 of 12 positive\n- Most recent month: -2.21%\n\n### Decide\nSet `gamma` (higher is more risk averse), `regime_treatment`\n(`hard_label` follows the filter, `probability_blend` weights both\nstates by P(bull)), and `max_position_pct` (a fraction; 1.00 is no cap).\nReply with the JSON object only.",
+  "raw_text": "{\"gamma\":8,\"regime_treatment\":\"hard_label\",\"max_position_pct\":0.20,\"rationale\":\"The bear regime is clear (P(bull)=0.09, one transition in 6 months) and the two states are well-separated, so hard_label is appropriate. However, recent performance is weak (mean +0.05%/mo, 5/12 positive, last month -2.21%) and R-squared is low at 0.34, warranting a modestly elevated gamma for caution. Gross exposure is already small at 13% and no name exceeds 20%, so the cap is set at 0.20 as a light guardrail without distorting the optimiser's conservative bear-regime output.\"}",
+  "raw_parsed": {
+    "gamma": 8,
+    "regime_treatment": "hard_label",
+    "max_position_pct": 0.2,
+    "rationale": "The bear regime is clear (P(bull)=0.09, one transition in 6 months) and the two states are well-separated, so hard_label is appropriate. However, recent performance is weak (mean +0.05%/mo, 5/12 positive, last month -2.21%) and R-squared is low at 0.34, warranting a modestly elevated gamma for caution. Gross exposure is already small at 13% and no name exceeds 20%, so the cap is set at 0.20 as a light guardrail without distorting the optimiser's conservative bear-regime output."
+  },
+  "accepted": true,
+  "reject_reason": "",
+  "posture": {
+    "gamma": 8.0,
+    "regime_treatment": "hard_label",
+    "max_position_pct": 0.2,
+    "rationale": "The bear regime is clear (P(bull)=0.09, one transition in 6 months) and the two states are well-separated, so hard_label is appropriate. However, recent performance is weak (mean +0.05%/mo, 5/12 positive, last month -2.21%) and R-squared is low at 0.34, warranting a modestly elevated gamma for caution. Gross exposure is already small at 13% and no name exceeds 20%, so the cap is set at 0.20 as a l"
+  },
+  "usage": {
+    "input_tokens": 1044,
+    "output_tokens": 172,
+    "latency_ms": 4932.3
+  }
+}

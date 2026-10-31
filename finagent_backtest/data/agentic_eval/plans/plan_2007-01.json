@@ -1,0 +1,290 @@
+{
+  "decision_date": "2007-01",
+  "cycle_id": "bt_200701",
+  "model": "claude-sonnet-4-6",
+  "regime": "bull",
+  "p_bull": 0.972519154916246,
+  "captured_at": "2026-08-12T07:20:19.697833+00:00",
+  "used_fallback": false,
+  "fallback_reason": "",
+  "raw_response": "```json\n{\n  \"nodes\": [\n    {\n      \"id\": \"data_fetch_1\",\n      \"type\": \"data_fetch\",\n      \"agent\": \"DataAgent\",\n      \"params\": {\n        \"symbols\": [\"AAPL\", \"MSFT\", \"NVDA\", \"JPM\", \"AMZN\", \"GOOGL\", \"XOM\", \"JNJ\"],\n        \"cycle_id\": \"bt_200701\",\n        \"timestamp\": \"2026-08-12T07:20:01Z\",\n        \"fields\": [\"OHLCV\", \"market_state\"]\n      }\n    },\n    {\n      \"id\": \"feature_1\",\n      \"type\": \"feature\",\n      \"agent\": \"FeatureAgent\",\n      \"params\": {\n        \"symbols\": [\"AAPL\", \"MSFT\", \"NVDA\", \"JPM\", \"AMZN\", \"GOOGL\", \"XOM\", \"JNJ\"],\n        \"indicators\": [\"RSI\", \"momentum\", \"volatility\", \"trend_strength\"],\n        \"regime\": \"bull\",\n        \"p_bull\": 0.97\n      }\n    },\n    {\n      \"id\": \"signal_1\",\n      \"type\": \"signal\",\n      \"agent\": \"AlphaAgent\",\n      \"params\": {\n        \"candidates\": [\n          {\"symbol\": \"AAPL\", \"direction\": \"BUY\", \"score\": 0.64, \"win_rate\": 0.67, \"conf\": 0.93},\n          {\"symbol\": \"MSFT\", \"direction\": \"BUY\", \"score\": 0.95, \"win_rate\": 0.67, \"conf\": 0.93},\n          {\"symbol\": \"NVDA\", \"direction\": \"BUY\", \"score\": 0.05, \"win_rate\": 0.76, \"conf\": 1.01},\n          {\"symbol\": \"JPM\",  \"direction\": \"BUY\", \"score\": 1.00, \"win_rate\": 0.75, \"conf\": 1.00},\n          {\"symbol\": \"AMZN\", \"direction\": \"BUY\", \"score\": 0.58, \"win_rate\": 0.40, \"conf\": 0.72},\n          {\"symbol\": \"GOOGL\",\"direction\": \"BUY\", \"score\": 0.77, \"win_rate\": 0.67, \"conf\": 0.93},\n          {\"symbol\": \"XOM\",  \"direction\": \"BUY\", \"score\": 0.61, \"win_rate\": 0.62, \"conf\": 0.90},\n          {\"symbol\": \"JNJ\",  \"direction\": \"BUY\", \"score\": 0.66, \"win_rate\": 0.45, \"conf\": 0.76}\n        ],\n        \"regime\": \"bull\",\n        \"score_threshold\": 0.60,\n        \"win_rate_threshold\": 0.50,\n        \"exclude_losers\": [\"AMZN\"],\n        \"daily_pnl_pct\": -0.03\n      }\n    },\n    {\n      \"id\": \"risk_1\",\n      \"type\": \"risk\",\n      \"agent\": \"RiskAgent\",\n      \"params\": {\n        \"NAV\": 1545384.53,\n        \"cash\": 0.00,\n        \"open_positions\": 8,\n        \"daily_pnl_pct\": -0.03,\n        \"var_confidence\": 0.95,\n        \"max_position_pct\": 0.15,\n        \"max_portfolio_exposure_pct\": 0.95,\n        \"drawdown_guard\": true,\n        \"regime\": \"bull\",\n        \"flag_low_scores\": [\"NVDA\"],\n        \"flag_low_winrate\": [\"AMZN\", \"JNJ\"]\n      }\n    },\n    {\n      \"id\": \"portfolio_1\",\n      \"type\": \"portfolio\",\n      \"agent\": \"PortfolioAgent\",\n      \"params\": {\n        \"NAV\": 1545384.53,\n        \"cash\": 0.00,\n        \"open_positions\": 8,\n        \"sizing_method\": \"risk_adjusted\",\n        \"regime\": \"bull\",\n        \"max_new_positions\": 3,\n        \"rebalance_existing\": true,\n        \"position_constraints\": {\n          \"AMZN\": \"reduce_or_exit\",\n          \"NVDA\": \"hold_only\",\n          \"JNJ\": \"reduce\"\n        },\n        \"priority_symbols\": [\"JPM\", \"MSFT\", \"GOOGL\", \"AAPL\"]\n      }\n    },\n    {\n      \"id\": \"execution_1\",\n      \"type\": \"execution\",\n      \"agent\": \"ExecutionAgent\",\n      \"params\": {\n        \"cycle_id\": \"bt_200701\",\n        \"timestamp\": \"2026-08-12T07:20:01Z\",\n        \"order_type\": \"limit\",\n        \"slippage_model\": \"conservative\",\n        \"pre_trade_cash_check\": true,\n        \"partial_fill_allowed\": true,\n        \"execution_notes\": \"cash=0, fund rebalance via exits before entries\"\n      }\n    },\n    {\n      \"id\": \"audit_1\",\n      \"type\": \"audit\",\n      \"agent\": \"AuditAgent\",\n      \"params\": {\n        \"cycle_id\": \"bt_200701\",\n        \"timestamp\": \"2026-08-12T07:20:01Z\",\n        \"NAV_pre\": 1545384.53,\n        \"daily_pnl_pct\": -0.03,\n        \"record_signals\": true,\n        \"record_risk_flags\": true,\n        \"record_executions\": true,\n        \"update_knowledge_graph\": true,\n        \"symbols\": [\"AAPL\", \"MSFT\", \"NVDA\", \"JPM\", \"AMZN\", \"GOOGL\", \"XOM\", \"JNJ\"]\n      }\n    }\n  ],\n  \"edges\": [\n    {\"src\": \"data_fetch_1\", \"dst\": \"feature_1\"},\n    {\"src\": \"feature_1\",    \"dst\": \"signal_1\"},\n    {\"src\": \"signal_1\",     \"dst\": \"risk_1\"},\n    {\"src\": \"risk_1\",       \"dst\": \"portfolio_1\"},\n    {\"src\": \"portfolio_1\",  \"dst\": \"execution_1\"},\n    {\"src\": \"execution_1\",  \"dst\": \"audit_1\"}\n  ]\n}\n```",
+  "dag": {
+    "source": "llm",
+    "nodes": [
+      {
+        "id": "data_fetch_1",
+        "type": "data_fetch",
+        "agent": "DataAgent",
+        "params": {
+          "symbols": [
+            "AAPL",
+            "MSFT",
+            "NVDA",
+            "JPM",
+            "AMZN",
+            "GOOGL",
+            "XOM",
+            "JNJ"
+          ],
+          "cycle_id": "bt_200701",
+          "timestamp": "2026-08-12T07:20:01Z",
+          "fields": [
+            "OHLCV",
+            "market_state"
+          ]
+        }
+      },
+      {
+        "id": "feature_1",
+        "type": "feature",
+        "agent": "FeatureAgent",
+        "params": {
+          "symbols": [
+            "AAPL",
+            "MSFT",
+            "NVDA",
+            "JPM",
+            "AMZN",
+            "GOOGL",
+            "XOM",
+            "JNJ"
+          ],
+          "indicators": [
+            "RSI",
+            "momentum",
+            "volatility",
+            "trend_strength"
+          ],
+          "regime": "bull",
+          "p_bull": 0.97
+        }
+      },
+      {
+        "id": "signal_1",
+        "type": "signal",
+        "agent": "AlphaAgent",
+        "params": {
+          "candidates": [
+            {
+              "symbol": "AAPL",
+              "direction": "BUY",
+              "score": 0.64,
+              "win_rate": 0.67,
+              "conf": 0.93
+            },
+            {
+              "symbol": "MSFT",
+              "direction": "BUY",
+              "score": 0.95,
+              "win_rate": 0.67,
+              "conf": 0.93
+            },
+            {
+              "symbol": "NVDA",
+              "direction": "BUY",
+              "score": 0.05,
+              "win_rate": 0.76,
+              "conf": 1.01
+            },
+            {
+              "symbol": "JPM",
+              "direction": "BUY",
+              "score": 1.0,
+              "win_rate": 0.75,
+              "conf": 1.0
+            },
+            {
+              "symbol": "AMZN",
+              "direction": "BUY",
+              "score": 0.58,
+              "win_rate": 0.4,
+              "conf": 0.72
+            },
+            {
+              "symbol": "GOOGL",
+              "direction": "BUY",
+              "score": 0.77,
+              "win_rate": 0.67,
+              "conf": 0.93
+            },
+            {
+              "symbol": "XOM",
+              "direction": "BUY",
+              "score": 0.61,
+              "win_rate": 0.62,
+              "conf": 0.9
+            },
+            {
+              "symbol": "JNJ",
+              "direction": "BUY",
+              "score": 0.66,
+              "win_rate": 0.45,
+              "conf": 0.76
+            }
+          ],
+          "regime": "bull",
+          "score_threshold": 0.6,
+          "win_rate_threshold": 0.5,
+          "exclude_losers": [
+            "AMZN"
+          ],
+          "daily_pnl_pct": -0.03
+        }
+      },
+      {
+        "id": "risk_1",
+        "type": "risk",
+        "agent": "RiskAgent",
+        "params": {
+          "NAV": 1545384.53,
+          "cash": 0.0,
+          "open_positions": 8,
+          "daily_pnl_pct": -0.03,
+          "var_confidence": 0.95,
+          "max_position_pct": 0.15,
+          "max_portfolio_exposure_pct": 0.95,
+          "drawdown_guard": true,
+          "regime": "bull",
+          "flag_low_scores": [
+            "NVDA"
+          ],
+          "flag_low_winrate": [
+            "AMZN",
+            "JNJ"
+          ]
+        }
+      },
+      {
+        "id": "portfolio_1",
+        "type": "portfolio",
+        "agent": "PortfolioAgent",
+        "params": {
+          "NAV": 1545384.53,
+          "cash": 0.0,
+          "open_positions": 8,
+          "sizing_method": "risk_adjusted",
+          "regime": "bull",
+          "max_new_positions": 3,
+          "rebalance_existing": true,
+          "position_constraints": {
+            "AMZN": "reduce_or_exit",
+            "NVDA": "hold_only",
+            "JNJ": "reduce"
+          },
+          "priority_symbols": [
+            "JPM",
+            "MSFT",
+            "GOOGL",
+            "AAPL"
+          ]
+        }
+      },
+      {
+        "id": "execution_1",
+        "type": "execution",
+        "agent": "ExecutionAgent",
+        "params": {
+          "cycle_id": "bt_200701",
+          "timestamp": "2026-08-12T07:20:01Z",
+          "order_type": "limit",
+          "slippage_model": "conservative",
+          "pre_trade_cash_check": true,
+          "partial_fill_allowed": true,
+          "execution_notes": "cash=0, fund rebalance via exits before entries"
+        }
+      },
+      {
+        "id": "audit_1",
+        "type": "audit",
+        "agent": "AuditAgent",
+        "params": {
+          "cycle_id": "bt_200701",
+          "timestamp": "2026-08-12T07:20:01Z",
+          "NAV_pre": 1545384.53,
+          "daily_pnl_pct": -0.03,
+          "record_signals": true,
+          "record_risk_flags": true,
+          "record_executions": true,
+          "update_knowledge_graph": true,
+          "symbols": [
+            "AAPL",
+            "MSFT",
+            "NVDA",
+            "JPM",
+            "AMZN",
+            "GOOGL",
+            "XOM",
+            "JNJ"
+          ]
+        }
+      }
+    ],
+    "edges": [
+      {
+        "src": "data_fetch_1",
+        "dst": "feature_1"
+      },
+      {
+        "src": "feature_1",
+        "dst": "signal_1"
+      },
+      {
+        "src": "signal_1",
+        "dst": "risk_1"
+      },
+      {
+        "src": "risk_1",
+        "dst": "portfolio_1"
+      },
+      {
+        "src": "portfolio_1",
+        "dst": "execution_1"
+      },
+      {
+        "src": "execution_1",
+        "dst": "audit_1"
+      }
+    ],
+    "stages": [
+      [
+        "data_fetch_1"
+      ],
+      [
+        "feature_1"
+      ],
+      [
+        "signal_1"
+      ],
+      [
+        "risk_1"
+      ],
+      [
+        "portfolio_1"
+      ],
+      [
+        "execution_1"
+      ],
+      [
+        "audit_1"
+      ]
+    ]
+  },
+  "posture": {
+    "cap_pos": 0.15,
+    "defensive_cap": null,
+    "sizing": "risk_adjusted",
+    "regime_mult": null,
+    "reduce_only": false,
+    "halt": false,
+    "flagged": []
+  },
+  "usage": {
+    "input_tokens": 1075,
+    "output_tokens": 1609,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 0,
+    "latency_ms": 18187.7,
+    "cost_usd": 0.02736
+  },
+  "session_md": "## Current Session Context\n- Cycle ID: bt_200701\n- Timestamp (UTC): 2026-08-12T07:20:01Z\n\n### Portfolio State\n- NAV: $1,545,384.53\n- Cash: $0.00\n- Open positions: 8\n- Daily P&L: -3%\n\n### Market Regime\n- Regime: bull\n- P(bull):     97%\n- P(bear):     3%\n- P(sideways): 0%\n\n### Memory Recall\n=== HISTORICAL CONTEXT FROM KNOWLEDGE GRAPH ===\n\n## Symbol History:\n  - AAPL: | 21 trades | WR: 67% (profitable) | Avg P&L: $+8,220 | Conf: 0.93x\n  - MSFT: | 21 trades | WR: 67% (profitable) | Avg P&L: $+1,816 | Conf: 0.93x\n  - NVDA: | 21 trades | WR: 76% (profitable) | Avg P&L: $+8,665 | Conf: 1.01x\n  - JPM: | 20 trades | WR: 75% (profitable) | Avg P&L: $+2,969 | Conf: 1.00x\n  - AMZN: | 20 trades | WR: 40% (LOSING) | Avg P&L: $-2,416 | Conf: 0.72x\n  - GOOGL: | 21 trades | WR: 67% (profitable) | Avg P&L: $+6,389 | Conf: 0.93x\n  - XOM: | 21 trades | WR: 62% (profitable) | Avg P&L: $+325 | Conf: 0.90x\n  - JNJ: | 20 trades | WR: 45% (profitable) | Avg P&L: $+432 | Conf: 0.76x\n=== END HISTORICAL CONTEXT ===\n\n### Current Candidates (first 10)\n- AAPL: BUY | RSI=0.0 | Score=0.64 | WinRate=67%\n- MSFT: BUY | RSI=0.0 | Score=0.95 | WinRate=67%\n- NVDA: BUY | RSI=0.0 | Score=0.05 | WinRate=76%\n- JPM: BUY | RSI=0.0 | Score=1.00 | WinRate=75%\n- AMZN: BUY | RSI=0.0 | Score=0.58 | WinRate=40%\n- GOOGL: BUY | RSI=0.0 | Score=0.77 | WinRate=67%\n- XOM: BUY | RSI=0.0 | Score=0.61 | WinRate=62%\n- JNJ: BUY | RSI=0.0 | Score=0.66 | WinRate=45%\n"
+}

@@ -1,0 +1,25 @@
+{
+  "date": "2010-07",
+  "model": "claude-sonnet-4-6",
+  "briefing": "## RS allocation cycle 2010-07\n\nYou are setting the decision parameters for a regime-switching optimal\nportfolio (Markose & Yang). The optimiser itself is fixed and will run\nwhatever you specify. Your job is to judge how far the model should be\ntrusted this month, given the diagnostics below.\n\n### Regime filter\n- Label this month: **bull**\n- P(bull) now: 0.75\n- P(bull) last 6 months (oldest first): 0.96, 0.96, 0.97, 0.77, 0.64, 0.75\n- Label changes in that window: 0\n\n### Conditional moments the optimiser would use (Eqs. 15-16)\n- If bull: mean +0.884%/mo, sd 4.07%/mo\n- If bear: mean -1.010%/mo, sd 5.34%/mo\n- Separation between the two states: 1.895 percentage points of monthly mean\n\n### Estimation health (CAPM, point-in-time)\n- Months of history used: 66\n- Mean R-squared across the eight stocks: 0.30\n- Beta range: 0.51 to 1.80\n- Largest beta move since last month: NVDA +0.05\n\n### What the optimiser wants before any cap\n- Largest single position: AAPL at 56%\n- Gross exposure: 100%\n- Names above 20%: 2\n\n### How this model's recent decisions turned out\n- Last 12 months: mean +2.43%/mo, 9 of 12 positive\n- Most recent month: -3.61%\n\n### Decide\nSet `gamma` (higher is more risk averse), `regime_treatment`\n(`hard_label` follows the filter, `probability_blend` weights both\nstates by P(bull)), and `max_position_pct` (a fraction; 1.00 is no cap).\nReply with the JSON object only.",
+  "raw_text": "{\"gamma\":8,\"regime_treatment\":\"probability_blend\",\"max_position_pct\":0.25,\"rationale\":\"P(bull) has drifted down from ~0.97 to 0.75 over six months and the optimiser wants 56% in a single name with two positions above 20%, both signs of model overconfidence; a higher gamma and position cap provide prudent guardrails. Probability blending is preferred given the filter's recent instability and the modest state separation of only 1.9pp, reducing the risk of hard-committing to a bull allocation that may be fragile.\"}",
+  "raw_parsed": {
+    "gamma": 8,
+    "regime_treatment": "probability_blend",
+    "max_position_pct": 0.25,
+    "rationale": "P(bull) has drifted down from ~0.97 to 0.75 over six months and the optimiser wants 56% in a single name with two positions above 20%, both signs of model overconfidence; a higher gamma and position cap provide prudent guardrails. Probability blending is preferred given the filter's recent instability and the modest state separation of only 1.9pp, reducing the risk of hard-committing to a bull allocation that may be fragile."
+  },
+  "accepted": true,
+  "reject_reason": "",
+  "posture": {
+    "gamma": 8.0,
+    "regime_treatment": "probability_blend",
+    "max_position_pct": 0.25,
+    "rationale": "P(bull) has drifted down from ~0.97 to 0.75 over six months and the optimiser wants 56% in a single name with two positions above 20%, both signs of model overconfidence; a higher gamma and position cap provide prudent guardrails. Probability blending is preferred given the filter's recent instability and the modest state separation of only 1.9pp, reducing the risk of hard-committing to a bull all"
+  },
+  "usage": {
+    "input_tokens": 1044,
+    "output_tokens": 139,
+    "latency_ms": 4764.5
+  }
+}

@@ -1,0 +1,32 @@
+# Secrets
+.env
+*.pem
+*.key
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ipynb_checkpoints/
+.venv/
+venv/
+
+# Alpaca/Benzinga article text is not redistributable. Download it locally
+# with src/alpaca_news.py; it must never be committed.
+regime_indicator/data/alpaca/news/
+regime_indicator/data/alpaca/news_spy_qqq.parquet
+regime_indicator/data/alpaca/fetch.log
+regime_indicator/data/alpaca/fingpt/prompts.parquet
+regime_indicator/data/alpaca/fingpt/pilot.parquet
+regime_indicator/data/alpaca/fingpt/scores/*/part-*.parquet
+
+# Generated locally, not part of the published results
+regime_indicator/data/pit/
+regime_indicator/results/arm_c_records.parquet
+finagent_backtest/data/agentic_eval/backtest/*_partial.parquet
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

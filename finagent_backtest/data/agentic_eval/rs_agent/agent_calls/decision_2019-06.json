@@ -1,0 +1,25 @@
+{
+  "date": "2019-06",
+  "model": "claude-sonnet-4-6",
+  "briefing": "## RS allocation cycle 2019-06\n\nYou are setting the decision parameters for a regime-switching optimal\nportfolio (Markose & Yang). The optimiser itself is fixed and will run\nwhatever you specify. Your job is to judge how far the model should be\ntrusted this month, given the diagnostics below.\n\n### Regime filter\n- Label this month: **bull**\n- P(bull) now: 0.85\n- P(bull) last 6 months (oldest first): 0.63, 0.79, 0.88, 0.93, 0.79, 0.85\n- Label changes in that window: 0\n\n### Conditional moments the optimiser would use (Eqs. 15-16)\n- If bull: mean +0.884%/mo, sd 4.07%/mo\n- If bear: mean -1.010%/mo, sd 5.34%/mo\n- Separation between the two states: 1.895 percentage points of monthly mean\n\n### Estimation health (CAPM, point-in-time)\n- Months of history used: 173\n- Mean R-squared across the eight stocks: 0.31\n- Beta range: 0.59 to 1.73\n- Largest beta move since last month: NVDA +0.04\n\n### What the optimiser wants before any cap\n- Largest single position: AAPL at 34%\n- Gross exposure: 100%\n- Names above 20%: 2\n\n### How this model's recent decisions turned out\n- Last 12 months: mean +0.49%/mo, 7 of 12 positive\n- Most recent month: -10.60%\n\n### Decide\nSet `gamma` (higher is more risk averse), `regime_treatment`\n(`hard_label` follows the filter, `probability_blend` weights both\nstates by P(bull)), and `max_position_pct` (a fraction; 1.00 is no cap).\nReply with the JSON object only.",
+  "raw_text": "{\"gamma\":8,\"regime_treatment\":\"probability_blend\",\"max_position_pct\":0.25,\"rationale\":\"The R-squared of 0.31 is low, weakening CAPM-based moment estimates, and the most recent month saw a sharp -10.60% drawdown. With P(bull) at 0.85 but not overwhelming certainty, probability_blend reduces overcommitment to a single regime. Two names above 20% and AAPL at 34% warrants a concentration cap, while elevated gamma tempers overall risk given the weak fit and recent loss.\"}",
+  "raw_parsed": {
+    "gamma": 8,
+    "regime_treatment": "probability_blend",
+    "max_position_pct": 0.25,
+    "rationale": "The R-squared of 0.31 is low, weakening CAPM-based moment estimates, and the most recent month saw a sharp -10.60% drawdown. With P(bull) at 0.85 but not overwhelming certainty, probability_blend reduces overcommitment to a single regime. Two names above 20% and AAPL at 34% warrants a concentration cap, while elevated gamma tempers overall risk given the weak fit and recent loss."
+  },
+  "accepted": true,
+  "reject_reason": "",
+  "posture": {
+    "gamma": 8.0,
+    "regime_treatment": "probability_blend",
+    "max_position_pct": 0.25,
+    "rationale": "The R-squared of 0.31 is low, weakening CAPM-based moment estimates, and the most recent month saw a sharp -10.60% drawdown. With P(bull) at 0.85 but not overwhelming certainty, probability_blend reduces overcommitment to a single regime. Two names above 20% and AAPL at 34% warrants a concentration cap, while elevated gamma tempers overall risk given the weak fit and recent loss."
+  },
+  "usage": {
+    "input_tokens": 1044,
+    "output_tokens": 136,
+    "latency_ms": 4406.3
+  }
+}

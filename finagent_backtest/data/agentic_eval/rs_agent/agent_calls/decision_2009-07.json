@@ -1,0 +1,25 @@
+{
+  "date": "2009-07",
+  "model": "claude-sonnet-4-6",
+  "briefing": "## RS allocation cycle 2009-07\n\nYou are setting the decision parameters for a regime-switching optimal\nportfolio (Markose & Yang). The optimiser itself is fixed and will run\nwhatever you specify. Your job is to judge how far the model should be\ntrusted this month, given the diagnostics below.\n\n### Regime filter\n- Label this month: **bull**\n- P(bull) now: 0.76\n- P(bull) last 6 months (oldest first): 0.01, 0.17, 0.26, 0.50, 0.67, 0.76\n- Label changes in that window: 1\n\n### Conditional moments the optimiser would use (Eqs. 15-16)\n- If bull: mean +0.884%/mo, sd 4.07%/mo\n- If bear: mean -1.010%/mo, sd 5.34%/mo\n- Separation between the two states: 1.895 percentage points of monthly mean\n\n### Estimation health (CAPM, point-in-time)\n- Months of history used: 54\n- Mean R-squared across the eight stocks: 0.28\n- Beta range: 0.51 to 1.67\n- Largest beta move since last month: MSFT +0.01\n\n### What the optimiser wants before any cap\n- Largest single position: AAPL at 44%\n- Gross exposure: 100%\n- Names above 20%: 2\n\n### How this model's recent decisions turned out\n- Last 12 months: mean +0.01%/mo, 5 of 12 positive\n- Most recent month: +2.45%\n\n### Decide\nSet `gamma` (higher is more risk averse), `regime_treatment`\n(`hard_label` follows the filter, `probability_blend` weights both\nstates by P(bull)), and `max_position_pct` (a fraction; 1.00 is no cap).\nReply with the JSON object only.",
+  "raw_text": "{\"gamma\":8,\"regime_treatment\":\"probability_blend\",\"max_position_pct\":0.25,\"rationale\":\"The filter has been transitioning steadily from bear to bull over six months with P(bull) still at 0.76 and only moderate confidence, favoring a probability blend over hard commitment. Low R-squared (0.28) and a concentrated optimizer output (AAPL at 44%, two names above 20%) with weak recent performance (mean +0.01%/mo over 12 months) justify higher risk aversion and a position cap to limit overexposure to a single name.\"}",
+  "raw_parsed": {
+    "gamma": 8,
+    "regime_treatment": "probability_blend",
+    "max_position_pct": 0.25,
+    "rationale": "The filter has been transitioning steadily from bear to bull over six months with P(bull) still at 0.76 and only moderate confidence, favoring a probability blend over hard commitment. Low R-squared (0.28) and a concentrated optimizer output (AAPL at 44%, two names above 20%) with weak recent performance (mean +0.01%/mo over 12 months) justify higher risk aversion and a position cap to limit overexposure to a single name."
+  },
+  "accepted": true,
+  "reject_reason": "",
+  "posture": {
+    "gamma": 8.0,
+    "regime_treatment": "probability_blend",
+    "max_position_pct": 0.25,
+    "rationale": "The filter has been transitioning steadily from bear to bull over six months with P(bull) still at 0.76 and only moderate confidence, favoring a probability blend over hard commitment. Low R-squared (0.28) and a concentrated optimizer output (AAPL at 44%, two names above 20%) with weak recent performance (mean +0.01%/mo over 12 months) justify higher risk aversion and a position cap to limit overe"
+  },
+  "usage": {
+    "input_tokens": 1044,
+    "output_tokens": 140,
+    "latency_ms": 4389.2
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "date": "2022-08",
+  "model": "claude-sonnet-4-6",
+  "briefing": "## RS allocation cycle 2022-08\n\nYou are setting the decision parameters for a regime-switching optimal\nportfolio (Markose & Yang). The optimiser itself is fixed and will run\nwhatever you specify. Your job is to judge how far the model should be\ntrusted this month, given the diagnostics below.\n\n### Regime filter\n- Label this month: **bear**\n- P(bull) now: 0.40\n- P(bull) last 6 months (oldest first): 0.93, 0.60, 0.75, 0.34, 0.42, 0.40\n- Label changes in that window: 1\n\n### Conditional moments the optimiser would use (Eqs. 15-16)\n- If bull: mean +0.884%/mo, sd 4.07%/mo\n- If bear: mean -1.010%/mo, sd 5.34%/mo\n- Separation between the two states: 1.895 percentage points of monthly mean\n\n### Estimation health (CAPM, point-in-time)\n- Months of history used: 211\n- Mean R-squared across the eight stocks: 0.34\n- Beta range: 0.58 to 1.63\n- Largest beta move since last month: AMZN +0.03\n\n### What the optimiser wants before any cap\n- Largest single position: AAPL at 10%\n- Gross exposure: 13%\n- Names above 20%: 0\n\n### How this model's recent decisions turned out\n- Last 12 months: mean +0.79%/mo, 6 of 12 positive\n- Most recent month: +6.27%\n\n### Decide\nSet `gamma` (higher is more risk averse), `regime_treatment`\n(`hard_label` follows the filter, `probability_blend` weights both\nstates by P(bull)), and `max_position_pct` (a fraction; 1.00 is no cap).\nReply with the JSON object only.",
+  "raw_text": "{\"gamma\":6,\"regime_treatment\":\"probability_blend\",\"max_position_pct\":1.0,\"rationale\":\"The filter is uncertain this month with P(bull)=0.40 and a volatile path over the past six months, so probability_blend is safer than hard committing to bear. However, the optimiser's gross exposure is only 13% with no position above 20%, so no cap is needed and the default gamma of 6 suffices.\"}",
+  "raw_parsed": {
+    "gamma": 6,
+    "regime_treatment": "probability_blend",
+    "max_position_pct": 1.0,
+    "rationale": "The filter is uncertain this month with P(bull)=0.40 and a volatile path over the past six months, so probability_blend is safer than hard committing to bear. However, the optimiser's gross exposure is only 13% with no position above 20%, so no cap is needed and the default gamma of 6 suffices."
+  },
+  "accepted": true,
+  "reject_reason": "",
+  "posture": {
+    "gamma": 6.0,
+    "regime_treatment": "probability_blend",
+    "max_position_pct": 1.0,
+    "rationale": "The filter is uncertain this month with P(bull)=0.40 and a volatile path over the past six months, so probability_blend is safer than hard committing to bear. However, the optimiser's gross exposure is only 13% with no position above 20%, so no cap is needed and the default gamma of 6 suffices."
+  },
+  "usage": {
+    "input_tokens": 1045,
+    "output_tokens": 106,
+    "latency_ms": 3552.4
+  }
+}

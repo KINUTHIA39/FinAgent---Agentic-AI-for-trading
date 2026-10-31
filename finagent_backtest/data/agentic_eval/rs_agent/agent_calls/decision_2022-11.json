@@ -1,0 +1,25 @@
+{
+  "date": "2022-11",
+  "model": "claude-sonnet-4-6",
+  "briefing": "## RS allocation cycle 2022-11\n\nYou are setting the decision parameters for a regime-switching optimal\nportfolio (Markose & Yang). The optimiser itself is fixed and will run\nwhatever you specify. Your job is to judge how far the model should be\ntrusted this month, given the diagnostics below.\n\n### Regime filter\n- Label this month: **bear**\n- P(bull) now: 0.49\n- P(bull) last 6 months (oldest first): 0.34, 0.42, 0.40, 0.09, 0.25, 0.49\n- Label changes in that window: 0\n\n### Conditional moments the optimiser would use (Eqs. 15-16)\n- If bull: mean +0.884%/mo, sd 4.07%/mo\n- If bear: mean -1.010%/mo, sd 5.34%/mo\n- Separation between the two states: 1.895 percentage points of monthly mean\n\n### Estimation health (CAPM, point-in-time)\n- Months of history used: 214\n- Mean R-squared across the eight stocks: 0.34\n- Beta range: 0.57 to 1.66\n- Largest beta move since last month: AMZN -0.04\n\n### What the optimiser wants before any cap\n- Largest single position: AAPL at 11%\n- Gross exposure: 12%\n- Names above 20%: 0\n\n### How this model's recent decisions turned out\n- Last 12 months: mean -0.26%/mo, 5 of 12 positive\n- Most recent month: +1.57%\n\n### Decide\nSet `gamma` (higher is more risk averse), `regime_treatment`\n(`hard_label` follows the filter, `probability_blend` weights both\nstates by P(bull)), and `max_position_pct` (a fraction; 1.00 is no cap).\nReply with the JSON object only.",
+  "raw_text": "{\"gamma\":9,\"regime_treatment\":\"probability_blend\",\"max_position_pct\":0.20,\"rationale\":\"P(bull) sits at 0.49, nearly indistinguishable from 50/50, making a hard bear label unreliable; probability_blend is safer given filter uncertainty. The two-state separation is modest (1.9pp), recent performance is weak (-0.26%/mo over 12 months), and R-squared is low (0.34), so elevated risk aversion (gamma=9) is warranted, though the optimiser's gross exposure is already very low (12%) and no names breach 20%, so a 20% cap is a light precaution rather than a binding constraint.\"}",
+  "raw_parsed": {
+    "gamma": 9,
+    "regime_treatment": "probability_blend",
+    "max_position_pct": 0.2,
+    "rationale": "P(bull) sits at 0.49, nearly indistinguishable from 50/50, making a hard bear label unreliable; probability_blend is safer given filter uncertainty. The two-state separation is modest (1.9pp), recent performance is weak (-0.26%/mo over 12 months), and R-squared is low (0.34), so elevated risk aversion (gamma=9) is warranted, though the optimiser's gross exposure is already very low (12%) and no names breach 20%, so a 20% cap is a light precaution rather than a binding constraint."
+  },
+  "accepted": true,
+  "reject_reason": "",
+  "posture": {
+    "gamma": 9.0,
+    "regime_treatment": "probability_blend",
+    "max_position_pct": 0.2,
+    "rationale": "P(bull) sits at 0.49, nearly indistinguishable from 50/50, making a hard bear label unreliable; probability_blend is safer given filter uncertainty. The two-state separation is modest (1.9pp), recent performance is weak (-0.26%/mo over 12 months), and R-squared is low (0.34), so elevated risk aversion (gamma=9) is warranted, though the optimiser's gross exposure is already very low (12%) and no na"
+  },
+  "usage": {
+    "input_tokens": 1045,
+    "output_tokens": 166,
+    "latency_ms": 5030.4
+  }
+}

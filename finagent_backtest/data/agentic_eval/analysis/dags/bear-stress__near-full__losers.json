@@ -1,0 +1,230 @@
+{
+  "source": "llm",
+  "used_fallback": false,
+  "nodes": [
+    {
+      "id": "data_fetch_1",
+      "type": "data_fetch",
+      "agent": "DataAgent",
+      "params": {
+        "symbols": [
+          "AAPL",
+          "MSFT",
+          "NVDA",
+          "JPM",
+          "AMZN",
+          "GOOGL",
+          "XOM",
+          "JNJ"
+        ],
+        "fields": [
+          "OHLCV",
+          "market_state"
+        ],
+        "cycle_id": "exp_bear-stress|near-full|losers",
+        "timestamp": "2026-06-25T17:21:08Z"
+      }
+    },
+    {
+      "id": "feature_1",
+      "type": "feature",
+      "agent": "FeatureAgent",
+      "params": {
+        "symbols": [
+          "AAPL",
+          "MSFT",
+          "NVDA",
+          "JPM",
+          "AMZN",
+          "GOOGL",
+          "XOM",
+          "JNJ"
+        ],
+        "indicators": [
+          "RSI",
+          "SMA"
+        ],
+        "rsi_window": 14,
+        "sma_windows": [
+          20,
+          50
+        ]
+      }
+    },
+    {
+      "id": "signal_1",
+      "type": "signal",
+      "agent": "AlphaAgent",
+      "params": {
+        "candidates": [
+          {
+            "symbol": "AAPL",
+            "signal": "BUY",
+            "rsi": 70.7,
+            "score": 0.41,
+            "win_rate": 0.58,
+            "low_confidence": true
+          },
+          {
+            "symbol": "MSFT",
+            "signal": "BUY",
+            "rsi": 37.9,
+            "score": 0.33,
+            "win_rate": 0.54,
+            "low_confidence": true
+          },
+          {
+            "symbol": "NVDA",
+            "signal": "BUY",
+            "rsi": 45.0,
+            "score": 0.29,
+            "win_rate": 0.54,
+            "low_confidence": true
+          },
+          {
+            "symbol": "JPM",
+            "signal": "BUY",
+            "rsi": 37.2,
+            "score": 0.22,
+            "win_rate": 0.58,
+            "low_confidence": false
+          },
+          {
+            "symbol": "AMZN",
+            "signal": "BUY",
+            "rsi": 27.9,
+            "score": 0.18,
+            "win_rate": 0.52,
+            "low_confidence": false
+          },
+          {
+            "symbol": "GOOGL",
+            "signal": "BUY",
+            "rsi": 24.0,
+            "score": 0.14,
+            "win_rate": 0.57,
+            "low_confidence": false
+          },
+          {
+            "symbol": "XOM",
+            "signal": "BUY",
+            "rsi": 60.5,
+            "score": 0.09,
+            "win_rate": 0.52,
+            "low_confidence": false
+          },
+          {
+            "symbol": "JNJ",
+            "signal": "BUY",
+            "rsi": 78.5,
+            "score": 0.05,
+            "win_rate": 0.53,
+            "low_confidence": false
+          }
+        ],
+        "regime": "bear-stress",
+        "regime_p_bear": 0.9,
+        "skip_low_confidence": true,
+        "score_threshold": 0.15,
+        "rsi_overbought_threshold": 75
+      }
+    },
+    {
+      "id": "risk_1",
+      "type": "risk",
+      "agent": "RiskAgent",
+      "params": {
+        "nav": 1000000.0,
+        "cash": 30000.0,
+        "open_positions": 28,
+        "daily_pnl_pct": -0.02,
+        "regime": "bear-stress",
+        "var_confidence": 0.99,
+        "max_position_limit": 30,
+        "max_cash_deploy_pct": 0.5,
+        "bear_stress_exposure_cap_pct": 0.03,
+        "daily_loss_halt_threshold_pct": -0.03,
+        "slip_bps_map": {
+          "AAPL": 9.2,
+          "MSFT": 7.8,
+          "NVDA": 11.0
+        }
+      }
+    },
+    {
+      "id": "portfolio_1",
+      "type": "portfolio",
+      "agent": "PortfolioAgent",
+      "params": {
+        "nav": 1000000.0,
+        "cash": 30000.0,
+        "regime": "bear-stress",
+        "max_new_positions": 2,
+        "position_size_pct_cap": 0.02,
+        "reduce_losers": true,
+        "loser_symbols": [
+          "AAPL",
+          "MSFT",
+          "NVDA"
+        ],
+        "loser_reduction_pct": 0.5,
+        "prefer_defensive": true
+      }
+    },
+    {
+      "id": "execution_1",
+      "type": "execution",
+      "agent": "ExecutionAgent",
+      "params": {
+        "order_type": "limit",
+        "slippage_guard_bps": 10.0,
+        "dry_run": false,
+        "bear_stress_mode": true,
+        "reduce_only_losers": [
+          "AAPL",
+          "MSFT",
+          "NVDA"
+        ]
+      }
+    },
+    {
+      "id": "audit_1",
+      "type": "audit",
+      "agent": "AuditAgent",
+      "params": {
+        "cycle_id": "exp_bear-stress|near-full|losers",
+        "timestamp": "2026-06-25T17:21:08Z",
+        "record_signals": true,
+        "record_risk_flags": true,
+        "record_executions": true,
+        "notes": "bear-stress regime; AAPL/MSFT/NVDA flagged low-confidence losers; near-full book; partial reduction of losing positions; new buys restricted to high-score defensive candidates only"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "src": "data_fetch_1",
+      "dst": "feature_1"
+    },
+    {
+      "src": "feature_1",
+      "dst": "signal_1"
+    },
+    {
+      "src": "signal_1",
+      "dst": "risk_1"
+    },
+    {
+      "src": "risk_1",
+      "dst": "portfolio_1"
+    },
+    {
+      "src": "portfolio_1",
+      "dst": "execution_1"
+    },
+    {
+      "src": "execution_1",
+      "dst": "audit_1"
+    }
+  ]
+}

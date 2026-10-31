@@ -1,0 +1,24 @@
+{
+ "artifact": "regime_daily_v1",
+ "built_at": "2026-09-03T09:25:59+00:00",
+ "producer": "Agentic_Regime_Indicator",
+ "product_arm": "C_agentic",
+ "benchmark_arms": [
+  "B_hmm",
+  "A_hamilton"
+ ],
+ "index": "SPX",
+ "score_start": "2005-01-03",
+ "score_end": "2023-12-29",
+ "n_days": 4781,
+ "states": [
+  "bull_quiet",
+  "bull_volatile",
+  "bear_stress"
+ ],
+ "refit_frequency": "annual",
+ "probabilities": "filtered",
+ "config_hash": "7579e4e4fb444fcd",
+ "agent_model": "claude-sonnet-5",
+ "note": "Frozen snapshot. Does not extrapolate. See CONTRACT.md in the producing repo before consuming."
+}

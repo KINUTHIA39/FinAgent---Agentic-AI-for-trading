@@ -1,0 +1,25 @@
+{
+  "date": "2023-02",
+  "model": "claude-sonnet-4-6",
+  "briefing": "## RS allocation cycle 2023-02\n\nYou are setting the decision parameters for a regime-switching optimal\nportfolio (Markose & Yang). The optimiser itself is fixed and will run\nwhatever you specify. Your job is to judge how far the model should be\ntrusted this month, given the diagnostics below.\n\n### Regime filter\n- Label this month: **bull**\n- P(bull) now: 0.60\n- P(bull) last 6 months (oldest first): 0.09, 0.25, 0.49, 0.34, 0.54, 0.60\n- Label changes in that window: 1\n\n### Conditional moments the optimiser would use (Eqs. 15-16)\n- If bull: mean +0.884%/mo, sd 4.07%/mo\n- If bear: mean -1.010%/mo, sd 5.34%/mo\n- Separation between the two states: 1.895 percentage points of monthly mean\n\n### Estimation health (CAPM, point-in-time)\n- Months of history used: 217\n- Mean R-squared across the eight stocks: 0.34\n- Beta range: 0.55 to 1.71\n- Largest beta move since last month: NVDA +0.03\n\n### What the optimiser wants before any cap\n- Largest single position: AAPL at 37%\n- Gross exposure: 100%\n- Names above 20%: 1\n\n### How this model's recent decisions turned out\n- Last 12 months: mean -0.09%/mo, 5 of 12 positive\n- Most recent month: +5.69%\n\n### Decide\nSet `gamma` (higher is more risk averse), `regime_treatment`\n(`hard_label` follows the filter, `probability_blend` weights both\nstates by P(bull)), and `max_position_pct` (a fraction; 1.00 is no cap).\nReply with the JSON object only.",
+  "raw_text": "{\"gamma\":8,\"regime_treatment\":\"probability_blend\",\"max_position_pct\":0.25,\"rationale\":\"P(bull) at 0.60 is only marginally above 0.50 and the filter has been unstable (oscillating from 0.09 to 0.60 over six months with a label change), so probability_blend is safer than committing to a hard label. The model's 12-month track record is marginally negative and a 37% single-name concentration in AAPL is excessive given the weak CAPM fit (mean R-squared 0.34), so gamma is raised to 8 and a 25% position cap is applied.\"}",
+  "raw_parsed": {
+    "gamma": 8,
+    "regime_treatment": "probability_blend",
+    "max_position_pct": 0.25,
+    "rationale": "P(bull) at 0.60 is only marginally above 0.50 and the filter has been unstable (oscillating from 0.09 to 0.60 over six months with a label change), so probability_blend is safer than committing to a hard label. The model's 12-month track record is marginally negative and a 37% single-name concentration in AAPL is excessive given the weak CAPM fit (mean R-squared 0.34), so gamma is raised to 8 and a 25% position cap is applied."
+  },
+  "accepted": true,
+  "reject_reason": "",
+  "posture": {
+    "gamma": 8.0,
+    "regime_treatment": "probability_blend",
+    "max_position_pct": 0.25,
+    "rationale": "P(bull) at 0.60 is only marginally above 0.50 and the filter has been unstable (oscillating from 0.09 to 0.60 over six months with a label change), so probability_blend is safer than committing to a hard label. The model's 12-month track record is marginally negative and a 37% single-name concentration in AAPL is excessive given the weak CAPM fit (mean R-squared 0.34), so gamma is raised to 8 and "
+  },
+  "usage": {
+    "input_tokens": 1044,
+    "output_tokens": 159,
+    "latency_ms": 4612.2
+  }
+}

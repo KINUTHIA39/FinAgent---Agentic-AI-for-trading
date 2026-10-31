@@ -1,0 +1,1062 @@
+<title>Regime Contest Live</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+
+<style>
+/* Committed to a single light instrument-panel look: this is a presentation
+   surface shown on a projector, where a dark variant helps nobody. Every
+   colour is painted explicitly so the page holds on any host background. */
+:root{
+  --ground:#F4F6F8; --surface:#FFFFFF; --raised:#EDF1F5; --sunken:#E4EAF0;
+  --ink:#0E141B; --ink-2:#3C4A58; --muted:#6B7A8A; --rule:#DAE2EA;
+  --accent:#0E80B2; --accent-soft:#E3F0F7;
+  --quiet:#0E80B2; --volatile:#BE7B00; --stress:#A83232;
+  --good:#1F7A4D; --bad:#A83232;
+  --shadow:0 1px 2px rgba(14,20,27,.05),0 6px 20px rgba(14,20,27,.07);
+}
+*{box-sizing:border-box}
+body{
+  margin:0;background:var(--ground);color:var(--ink);
+  font-family:"IBM Plex Sans",ui-sans-serif,system-ui,sans-serif;
+  font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased;
+}
+.mono{font-family:"IBM Plex Mono",ui-monospace,monospace;font-variant-numeric:tabular-nums}
+h1,h2,h3{font-family:Fraunces,Georgia,serif;margin:0;text-wrap:balance}
+h1{font-size:1.45rem;font-weight:600;letter-spacing:-.01em}
+h2{font-size:1.22rem;font-weight:600}
+h3{font-size:.98rem;font-weight:600;font-family:"IBM Plex Sans",sans-serif}
+p{margin:0 0 .9em}
+
+/* ------------------------------------------------------------------- chrome */
+header{background:var(--surface);border-bottom:1px solid var(--rule);position:sticky;top:0;z-index:20}
+.hd{max-width:1240px;margin:0 auto;padding:16px 24px 0;display:flex;gap:18px;align-items:baseline;flex-wrap:wrap}
+.hd .sub{color:var(--muted);font-size:.8rem;font-family:"IBM Plex Mono",monospace;letter-spacing:.04em}
+nav{max-width:1240px;margin:0 auto;padding:10px 24px 0;display:flex;gap:2px;overflow-x:auto}
+.tab{
+  appearance:none;border:0;background:none;cursor:pointer;color:var(--muted);
+  font-family:"IBM Plex Sans",sans-serif;font-size:.88rem;font-weight:500;
+  padding:10px 15px;border-bottom:2px solid transparent;white-space:nowrap;
+}
+.tab:hover{color:var(--ink-2)}
+.tab[aria-selected="true"]{color:var(--accent);border-bottom-color:var(--accent)}
+.tab:focus-visible{outline:2px solid var(--accent);outline-offset:-2px;border-radius:4px}
+main{max-width:1240px;margin:0 auto;padding:26px 24px 80px}
+.panel[hidden]{display:none}
+
+.card{background:var(--surface);border:1px solid var(--rule);border-radius:12px;box-shadow:var(--shadow);padding:20px;margin-bottom:18px}
+.card.tight{padding:14px 16px}
+.scroll{overflow-x:auto}
+.sub2{color:var(--muted);font-size:.86rem;margin:0 0 16px;max-width:76ch}
+
+/* ------------------------------------------------------------------ player */
+.stage{display:grid;grid-template-columns:1fr 340px;gap:18px;align-items:start}
+@media (max-width:940px){.stage{grid-template-columns:1fr}}
+
+.controls{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:16px}
+button.ctl{
+  appearance:none;cursor:pointer;border:1px solid var(--rule);background:var(--surface);
+  color:var(--ink);border-radius:8px;padding:8px 14px;font-size:.86rem;font-weight:500;
+  font-family:"IBM Plex Sans",sans-serif;display:inline-flex;gap:7px;align-items:center;
+}
+button.ctl:hover{background:var(--raised)}
+button.ctl:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+button.ctl.primary{background:var(--accent);border-color:var(--accent);color:#fff;min-width:104px;justify-content:center}
+button.ctl.primary:hover{filter:brightness(1.07)}
+button.ctl[aria-pressed="true"]{background:var(--accent-soft);border-color:var(--accent);color:var(--accent)}
+.spd{display:flex;gap:0;border:1px solid var(--rule);border-radius:8px;overflow:hidden}
+.spd button{appearance:none;border:0;background:var(--surface);cursor:pointer;padding:8px 11px;font-size:.8rem;color:var(--muted);font-family:"IBM Plex Mono",monospace}
+.spd button[aria-pressed="true"]{background:var(--accent);color:#fff}
+input[type=range]{flex:1;min-width:180px;accent-color:var(--accent)}
+
+.readout{display:flex;gap:22px;align-items:baseline;flex-wrap:wrap;margin-bottom:14px}
+.readout .date{font-family:"IBM Plex Mono",monospace;font-size:1.6rem;font-weight:600;letter-spacing:-.01em}
+.readout .px{font-family:"IBM Plex Mono",monospace;color:var(--ink-2);font-size:1rem}
+.readout .ep{
+  font-size:.72rem;font-family:"IBM Plex Mono",monospace;letter-spacing:.08em;
+  text-transform:uppercase;padding:4px 10px;border-radius:20px;
+  background:var(--stress);color:#fff;font-weight:600
+}
+.readout .ep[hidden]{display:none}
+
+/* the two verdict cards -- the thing the audience watches */
+.calls{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px}
+.call{border:1px solid var(--rule);border-radius:12px;padding:16px;background:var(--surface);position:relative;overflow:hidden}
+.call .who{font-size:.72rem;font-family:"IBM Plex Mono",monospace;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.call .st{font-family:Fraunces,Georgia,serif;font-size:1.5rem;font-weight:600;margin:8px 0 4px;line-height:1.1;transition:color .18s}
+.call .cf{font-size:.78rem;color:var(--muted);font-family:"IBM Plex Mono",monospace}
+.call .bar{height:5px;background:var(--sunken);border-radius:3px;margin-top:10px;overflow:hidden}
+.call .bar i{display:block;height:100%;border-radius:3px;transition:width .18s,background .18s}
+.call .edge{position:absolute;left:0;top:0;bottom:0;width:4px;transition:background .18s}
+.call.agree{box-shadow:inset 0 0 0 1px var(--rule)}
+.call .tag{position:absolute;right:12px;top:12px;font-size:.66rem;font-family:"IBM Plex Mono",monospace;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+
+/* panel side rail */
+.rail{border:1px solid var(--rule);border-radius:12px;background:var(--surface);padding:16px;box-shadow:var(--shadow)}
+.rail h3{margin-bottom:3px}
+.rail .when{font-size:.74rem;color:var(--muted);font-family:"IBM Plex Mono",monospace;margin-bottom:14px}
+.vote{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:7px 0;border-bottom:1px solid var(--rule);font-size:.82rem}
+.vote:last-of-type{border-bottom:0}
+.vote .r{color:var(--ink-2)}
+.vote .v{font-family:"IBM Plex Mono",monospace;font-size:.76rem;font-weight:600}
+.vote.abst .r,.vote.abst .v{color:var(--muted);font-weight:400;font-style:italic}
+.verd{margin-top:13px;padding-top:13px;border-top:1px solid var(--rule)}
+.verd .lab{font-size:.7rem;font-family:"IBM Plex Mono",monospace;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.verd .val{font-weight:600;font-size:.92rem;margin-top:2px}
+.obj{font-size:.8rem;color:var(--ink-2);margin-top:11px;line-height:1.5;max-height:190px;overflow-y:auto}
+.rail.idle .vote,.rail.idle .verd,.rail.idle .obj{display:none}
+.idle-msg{color:var(--muted);font-size:.85rem;display:none}
+.rail.idle .idle-msg{display:block}
+
+canvas{display:block;width:100%;touch-action:none}
+.chart-host{position:relative}
+#tip{
+  position:absolute;pointer-events:none;opacity:0;transition:opacity .1s;background:var(--surface);
+  border:1px solid var(--rule);border-radius:8px;box-shadow:var(--shadow);padding:9px 11px;
+  font-size:.78rem;z-index:5;min-width:180px
+}
+#tip .t-d{font-family:"IBM Plex Mono",monospace;font-weight:600;margin-bottom:6px}
+#tip .t-r{display:flex;justify-content:space-between;gap:14px;padding:1px 0}
+#tip .t-r span:first-child{color:var(--muted)}
+#tip .t-r span:last-child{font-family:"IBM Plex Mono",monospace}
+
+.legend{display:flex;gap:18px;flex-wrap:wrap;align-items:center;margin-bottom:14px;font-size:.83rem;color:var(--ink-2)}
+.lg{display:flex;gap:7px;align-items:center}
+.sw{width:20px;height:10px;border-radius:3px;flex:none}
+
+/* how-to strip: the first question every viewer asks about the three bands */
+button.mini{
+  appearance:none;cursor:pointer;border:1px solid var(--rule);background:var(--surface);
+  color:var(--muted);border-radius:20px;padding:4px 11px;font-size:.75rem;
+  font-family:"IBM Plex Sans",sans-serif;
+}
+button.mini:hover{border-color:var(--accent);color:var(--accent)}
+button.mini:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+button.mini[aria-expanded="false"]{color:var(--muted)}
+.howto{
+  border:1px solid var(--rule);border-left:3px solid var(--accent);
+  background:var(--accent-soft);border-radius:0 10px 10px 0;
+  padding:14px 16px;margin:0 0 16px;
+}
+.howto[hidden]{display:none}
+.howto .hr{display:flex;gap:12px;align-items:baseline;padding:5px 0}
+.howto .hk{
+  font-family:"IBM Plex Mono",monospace;font-size:.72rem;font-weight:600;
+  letter-spacing:.06em;text-transform:uppercase;color:var(--accent);
+  min-width:74px;flex:none
+}
+.howto .hr p{margin:0;font-size:.83rem;color:var(--ink-2);line-height:1.5}
+.howto .hnote{
+  margin:10px 0 0;padding-top:10px;border-top:1px solid var(--rule);
+  font-size:.81rem;color:var(--ink-2);line-height:1.5
+}
+.howto b{color:var(--ink);font-weight:600}
+@media (max-width:560px){.howto .hr{flex-direction:column;gap:2px}}
+
+.jump{display:flex;gap:7px;flex-wrap:wrap;margin-top:4px}
+.jump button{
+  appearance:none;cursor:pointer;border:1px solid var(--rule);background:var(--surface);
+  border-radius:20px;padding:5px 12px;font-size:.76rem;color:var(--ink-2);
+  font-family:"IBM Plex Sans",sans-serif
+}
+.jump button:hover{border-color:var(--accent);color:var(--accent)}
+
+/* ------------------------------------------------------------------ tables */
+table{border-collapse:collapse;width:100%;font-size:.85rem}
+th,td{text-align:right;padding:8px 11px;border-bottom:1px solid var(--rule);white-space:nowrap}
+th:first-child,td:first-child{text-align:left}
+thead th{font-family:"IBM Plex Mono",monospace;font-size:.68rem;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);font-weight:600;border-bottom:1px solid var(--ink-2)}
+tbody td:not(:first-child){font-family:"IBM Plex Mono",monospace}
+tbody tr:hover{background:var(--raised)}
+td.win{color:var(--good);font-weight:600}
+td.lose{color:var(--bad)}
+.rowlab{color:var(--ink-2)}
+
+.grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));margin-bottom:18px}
+.stat{background:var(--surface);border:1px solid var(--rule);border-radius:12px;padding:16px}
+.stat .n{font-family:"IBM Plex Mono",monospace;font-size:1.5rem;font-weight:600;line-height:1}
+.stat .l{font-size:.75rem;color:var(--muted);margin-top:7px;line-height:1.4}
+
+ul.notes{padding-left:0;list-style:none;margin:0}
+ul.notes li{padding:11px 0 11px 18px;border-bottom:1px solid var(--rule);position:relative;color:var(--ink-2);font-size:.88rem}
+ul.notes li:last-child{border-bottom:0}
+ul.notes li::before{content:"";position:absolute;left:0;top:19px;width:6px;height:2px;background:var(--accent)}
+ul.notes b{color:var(--ink);font-weight:600}
+
+/* ------------------------------------------------------------ transcripts */
+.spk{background:var(--surface);border:1px solid var(--rule);border-radius:12px;
+     box-shadow:var(--shadow);padding:0;margin-bottom:14px;overflow:hidden}
+.spk > .sh{
+  display:flex;gap:12px;align-items:center;flex-wrap:wrap;
+  padding:13px 18px;border-bottom:1px solid var(--rule);background:var(--raised)
+}
+.spk .role{
+  font-family:"IBM Plex Mono",monospace;font-size:.76rem;font-weight:600;
+  letter-spacing:.08em;text-transform:uppercase;color:var(--ink)
+}
+.spk .said{font-family:"IBM Plex Sans",sans-serif;font-size:.86rem;font-weight:600}
+.spk .meta{margin-left:auto;font-family:"IBM Plex Mono",monospace;font-size:.72rem;color:var(--muted)}
+.spk .bd{padding:16px 18px;display:grid;grid-template-columns:1fr 300px;gap:20px}
+@media (max-width:900px){.spk .bd{grid-template-columns:1fr}}
+.spk h4{margin:0 0 8px;font-size:.7rem;font-family:"IBM Plex Mono",monospace;
+        letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.spk .why{font-size:.87rem;color:var(--ink-2);line-height:1.55;margin:0}
+.ztab{font-size:.74rem;width:100%}
+.ztab th,.ztab td{padding:4px 7px;white-space:nowrap}
+.ztab thead th{font-size:.64rem}
+.ztab td{font-family:"IBM Plex Mono",monospace}
+.ztab td.now{background:var(--accent-soft);font-weight:600}
+.zhi{color:var(--stress);font-weight:600}
+details.sysp{margin-top:14px;border-top:1px solid var(--rule);padding-top:12px}
+details.sysp summary{
+  cursor:pointer;font-size:.76rem;color:var(--accent);font-family:"IBM Plex Mono",monospace;
+  letter-spacing:.04em
+}
+details.sysp summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
+details.sysp pre{
+  margin:10px 0 0;padding:13px 15px;background:var(--sunken);border-radius:8px;
+  font-family:"IBM Plex Mono",monospace;font-size:.75rem;line-height:1.55;
+  white-space:pre-wrap;color:var(--ink-2);max-height:340px;overflow-y:auto
+}
+.txhead{background:var(--surface);border:1px solid var(--rule);border-left:3px solid var(--accent);
+        border-radius:0 12px 12px 0;padding:16px 18px;margin-bottom:16px;box-shadow:var(--shadow)}
+.txhead .d{font-family:"IBM Plex Mono",monospace;font-size:1.25rem;font-weight:600}
+.txhead .row{display:flex;gap:26px;flex-wrap:wrap;margin-top:10px;font-size:.83rem}
+.txhead .row div span{display:block;font-size:.7rem;color:var(--muted);
+  font-family:"IBM Plex Mono",monospace;letter-spacing:.06em;text-transform:uppercase}
+.badge{
+  display:inline-block;font-family:"IBM Plex Mono",monospace;font-size:.66rem;
+  letter-spacing:.06em;text-transform:uppercase;padding:3px 9px;border-radius:20px;
+  border:1px solid var(--rule);color:var(--ink-2);background:var(--surface)
+}
+.badge.veto{background:var(--stress);color:#fff;border-color:var(--stress)}
+.badge.abst{font-style:italic;color:var(--muted)}
+
+.browse{display:flex;gap:9px;align-items:center;flex-wrap:wrap;margin-bottom:14px}
+select{font-family:"IBM Plex Mono",monospace;font-size:.82rem;padding:7px 10px;border:1px solid var(--rule);border-radius:8px;background:var(--surface);color:var(--ink)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<header>
+  <div class="hd">
+    <h1>Regime contest, live</h1>
+    <span class="sub" id="hd-sub">—</span>
+  </div>
+  <nav role="tablist">
+    <button class="tab" role="tab" aria-selected="true"  data-p="live">Live</button>
+    <button class="tab" role="tab" aria-selected="false" data-p="timeline">Timeline</button>
+    <button class="tab" role="tab" aria-selected="false" data-p="early">Who was early</button>
+    <button class="tab" role="tab" aria-selected="false" data-p="panelt">The panel</button>
+    <button class="tab" role="tab" aria-selected="false" data-p="tx" id="tab-tx">Transcripts</button>
+    <button class="tab" role="tab" aria-selected="false" data-p="numbers">Numbers</button>
+  </nav>
+</header>
+
+<main>
+<!-- ================================================================= LIVE -->
+<div class="panel" id="p-live">
+  <div class="card">
+    <div class="controls">
+      <button class="ctl primary" id="play">▶ Play</button>
+      <button class="ctl" id="reset">Restart</button>
+      <div class="spd" id="speed" role="group" aria-label="Playback speed">
+        <button data-s="1"  aria-pressed="false">1×</button>
+        <button data-s="3"  aria-pressed="true">3×</button>
+        <button data-s="8"  aria-pressed="false">8×</button>
+        <button data-s="20" aria-pressed="false">20×</button>
+      </div>
+      <button class="ctl" id="stopPanel" aria-pressed="false" title="Pause automatically whenever the panel convenes">Pause on panel days</button>
+      <input type="range" id="scrub" min="0" value="0" step="1" aria-label="Scrub through time">
+    </div>
+
+    <div class="readout">
+      <span class="date" id="r-date">—</span>
+      <span class="px" id="r-px">—</span>
+      <span class="ep" id="r-ep" hidden></span>
+      <span class="px" id="r-prog" style="margin-left:auto">—</span>
+    </div>
+
+    <div class="jump" id="jump"></div>
+  </div>
+
+  <div class="stage">
+    <div>
+      <div class="calls">
+        <div class="call" id="call-h">
+          <span class="edge" style="background:var(--rule)"></span>
+          <div class="who">Hamilton 1989</div>
+          <div class="st">—</div>
+          <div class="cf">—</div>
+          <div class="bar"><i style="width:0"></i></div>
+        </div>
+        <div class="call" id="call-c">
+          <span class="edge" style="background:var(--rule)"></span>
+          <div class="who">Agentic panel</div>
+          <span class="tag" id="c-tag"></span>
+          <div class="st">—</div>
+          <div class="cf">—</div>
+          <div class="bar"><i style="width:0"></i></div>
+        </div>
+      </div>
+
+      <div class="card tight">
+        <div class="legend">
+          <div class="lg"><span class="sw" style="background:var(--quiet)"></span>Bull, quiet</div>
+          <div class="lg"><span class="sw" style="background:var(--volatile)"></span>Bull, volatile</div>
+          <div class="lg"><span class="sw" style="background:var(--stress)"></span>Bear, stressed</div>
+          <div class="lg" style="margin-left:auto">
+            <button class="mini" id="howto-t" aria-expanded="true">How to read this</button>
+          </div>
+        </div>
+
+        <div class="howto" id="howto">
+          <div class="hr">
+            <span class="hk">Truth</span>
+            <p>The answer key. Not news — it is built from realized volatility
+               over the <b>next 20 trading days</b>, so it turns red just as
+               trouble begins. Neither system can see it.</p>
+          </div>
+          <div class="hr">
+            <span class="hk">Hamilton</span>
+            <p>The 1989 benchmark's call that day, using only data up to that
+               day. Where its colour differs from Truth, it is wrong.</p>
+          </div>
+          <div class="hr">
+            <span class="hk">Agentic</span>
+            <p>The agent panel's call that day, under the same constraint.
+               Black ticks beneath this bar mark days the panel convened.</p>
+          </div>
+          <p class="hnote">
+            Every day is coloured — these are continuous states, not event
+            markers. And because Truth looks forward, both systems are normally
+            a little behind it; that is the gap they are trying to close. To
+            judge <b>who caught an event first</b>, use the
+            <b>Who was early</b> tab, which measures each system against the
+            hand-dated onset of the episode instead.
+          </p>
+        </div>
+
+        <canvas id="live" height="330"></canvas>
+      </div>
+    </div>
+
+    <div class="rail idle" id="rail">
+      <h3>The panel</h3>
+      <div class="when" id="rail-when">has not convened yet</div>
+      <p class="idle-msg">
+        The panel only wakes on candidate days — when the detector flips, loses
+        confidence, or its probabilities move sharply. On every other day the
+        statistical call passes straight through untouched.
+      </p>
+      <div id="rail-votes"></div>
+      <div class="verd">
+        <div class="lab">Critic verdict</div>
+        <div class="val" id="rail-verdict">—</div>
+      </div>
+      <div class="obj" id="rail-obj"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================= TIMELINE -->
+<div class="panel" id="p-timeline" hidden>
+  <div class="card">
+    <p class="sub2">
+      The whole scored window at once. Top band is the ground truth — forward
+      20-day realized-volatility terciles, computed from price alone. Grey marks
+      above the bands are days the panel convened. Hover anywhere to inspect.
+    </p>
+    <div class="legend">
+      <div class="lg"><span class="sw" style="background:var(--quiet)"></span>Bull, quiet</div>
+      <div class="lg"><span class="sw" style="background:var(--volatile)"></span>Bull, volatile</div>
+      <div class="lg"><span class="sw" style="background:var(--stress)"></span>Bear, stressed</div>
+    </div>
+    <div class="chart-host">
+      <canvas id="ribbon" height="400"></canvas>
+      <div id="tip"></div>
+    </div>
+  </div>
+  <div class="card">
+    <h3 style="margin-bottom:10px">How to read this</h3>
+    <ul class="notes">
+      <li><b>Hamilton is jumpy and accurate</b> — 181 episodes, median 5 days. It flips often and is right more often.</li>
+      <li><b>The agentic track is smooth and late</b> — 95 episodes, median 21 days. It commits and holds.</li>
+      <li><b>Adding 89,380 market-wide news articles changed almost nothing.</b> The panel's Brier moved 0.8337 → 0.8336 and it changed 2 labels instead of 4. The null result on sentiment is not an artefact of thin news data.</li>
+      <li><b>Look at 2008.</b> The detector sat confidently in bear the whole way through, so nothing triggered the gate and the panel never convened across the biggest episode in the sample.</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ================================================================ EARLY -->
+<div class="panel" id="p-early" hidden>
+  <div class="card">
+    <p class="sub2">
+      Days between each system's first <em>bear, stressed</em> call and the
+      hand-dated onset of the episode. Positive is early, negative is late, and
+      a dash means it never got there at all.
+    </p>
+    <div class="scroll"><table id="tbl-lead"></table></div>
+  </div>
+  <div class="card">
+    <ul class="notes">
+      <li><b>Hamilton reached 7 of 8 onsets, the panel 6.</b></li>
+      <li><b>2022 is the clearest gap</b> — Hamilton called it 38 days ahead of the onset; the agentic arm never called it at all.</li>
+      <li><b>The panel cost three days at the GFC.</b> Its own detector flagged 19 October 2007; a veto pushed the agentic arm to 22 October.</li>
+      <li><b>The dot-com peak sits in the burn-in window</b>, before scoring opens, so no arm is credited with it.</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ================================================================ PANEL -->
+<div class="panel" id="p-panelt" hidden>
+  <div class="grid" id="panel-stats"></div>
+  <div class="card">
+    <h3 style="margin-bottom:4px">Browse every day the panel convened</h3>
+    <p class="sub2">All 582 sittings, with each specialist's vote and the critic's objection in full.</p>
+    <div class="browse">
+      <select id="pfilter">
+        <option value="all">All sittings</option>
+        <option value="veto">Vetoes only — label changed</option>
+        <option value="blocked">Override blocked by the unanimity gate</option>
+        <option value="confidence_only">Confidence adjusted only</option>
+      </select>
+      <select id="pday"></select>
+    </div>
+    <div id="pdetail"></div>
+  </div>
+</div>
+
+<!-- ========================================================== TRANSCRIPTS -->
+<div class="panel" id="p-tx" hidden>
+  <div class="card">
+    <h3 style="margin-bottom:4px">Exactly what Claude was sent, and exactly what it replied</h3>
+    <p class="sub2">
+      Every one of the 582 sittings — the 12% of days the panel was allowed to
+      act — recovered from the run's own cache. Nothing here is reconstructed
+      or paraphrased: these are the prompts as sent and the replies as parsed.
+      Note what the prompts do <em>not</em> contain: no dates, no ticker names,
+      no prices. Only z-scores against expanding history, with periods labelled
+      <span class="mono">t</span>, <span class="mono">t-1</span>, …
+      The news specialist reads <b>two</b> tone tracks —
+      <span class="mono">mean_*</span> from seven single stocks, and
+      <span class="mono">market_*</span> from 89,380 market-wide wire articles —
+      and each carries its own badge showing whether that track had news that
+      day or is showing a decayed echo.
+    </p>
+    <div class="browse">
+      <button class="ctl" id="tx-prev">← Prev</button>
+      <select id="tx-day"></select>
+      <button class="ctl" id="tx-next">Next →</button>
+      <select id="tx-filter">
+        <option value="all">All sittings</option>
+        <option value="veto">Vetoes only</option>
+        <option value="override_blocked_not_unanimous">Blocked overrides</option>
+        <option value="news">Days with live news</option>
+        <option value="abstain">Days a specialist abstained</option>
+      </select>
+      <span class="mono" id="tx-count" style="color:var(--muted);font-size:.78rem"></span>
+    </div>
+  </div>
+
+  <div id="tx-head"></div>
+  <div id="tx-body"></div>
+</div>
+
+<!-- ============================================================== NUMBERS -->
+<div class="panel" id="p-numbers" hidden>
+  <div class="card scroll">
+    <p class="sub2">Full scope — every scored day. Brier lower is better; skill scores positive means it beat that baseline.</p>
+    <table id="tbl-full"></table>
+  </div>
+  <div class="card scroll">
+    <p class="sub2">Gated scope — only days the panel was allowed to act.</p>
+    <table id="tbl-gated"></table>
+  </div>
+  <div class="card scroll">
+    <p class="sub2">Paired Diebold–Mariano tests on Brier loss, Newey–West errors, blocked at the 20-day forward window.</p>
+    <table id="tbl-tests"></table>
+  </div>
+</div>
+</main>
+
+<script type="application/json" id="payload">__DATA__</script>
+<script>
+"use strict";
+const D = JSON.parse(document.getElementById("payload").textContent);
+const N = D.meta.n;
+const SC = ["--quiet","--volatile","--stress"];
+const SNAME = ["Bull, quiet","Bull, volatile","Bear, stressed"];
+const CSSV = k => getComputedStyle(document.documentElement).getPropertyValue(k).trim();
+const col = c => (c===null||c===undefined) ? CSSV("--muted") : CSSV(SC[c]);
+const PRETTY = {bull_quiet:"Bull, quiet",bull_volatile:"Bull, volatile",bear_stress:"Bear, stressed"};
+const EPN = {dotcom:"Dot-com peak",gfc:"Global financial crisis",aug_2011:"August 2011",
+             china_2015:"China 2015",volmageddon:"Volmageddon",q4_2018:"Q4 2018",
+             covid:"COVID crash",bear_2022:"2022 bear market"};
+const ACTN = {veto:"Veto — label changed",confidence_only:"Confidence adjusted",
+              override_blocked_not_unanimous:"Override blocked (not unanimous)",
+              passthrough:"Accepted as proposed"};
+const fmt=(v,d=4)=>(typeof v==="number"&&!Number.isNaN(v))?v.toFixed(d):"—";
+
+document.getElementById("hd-sub").textContent =
+  D.meta.index + "  ·  " + D.meta.start + " → " + D.meta.end + "  ·  "
+  + N.toLocaleString() + " days  ·  panel convened " + D.meta.n_gated + "×";
+
+/* ------------------------------------------------------------------- tabs */
+const tabs = [...document.querySelectorAll(".tab")];
+tabs.forEach(t => t.addEventListener("click", () => {
+  tabs.forEach(o => o.setAttribute("aria-selected", String(o === t)));
+  document.querySelectorAll("main > .panel").forEach(p => p.hidden = true);
+  const id = "p-" + t.dataset.p;
+  document.getElementById(id).hidden = false;
+  if(t.dataset.p === "timeline") drawRibbon();
+  if(t.dataset.p === "live") drawLive();
+}));
+
+/* --------------------------------------------------------- how-to toggle */
+(function(){
+  const box=document.getElementById("howto"), btn=document.getElementById("howto-t");
+  if(!box||!btn) return;
+  // Presenters who already know the chart should not have to see the primer
+  // every time. Storage can throw (private windows, thumbnailers), so the page
+  // must render correctly with no stored value at all.
+  let hidden=false;
+  try{ hidden = localStorage.getItem("howto") === "0"; }catch(e){}
+  // redraw only on a user toggle: collapsing the strip changes the canvas
+  // width. On boot the canvas has not been sized yet and EPS is still in its
+  // temporal dead zone, so the boot call at the bottom of the script does it.
+  const apply=(redraw)=>{
+    box.hidden=hidden;
+    btn.setAttribute("aria-expanded", String(!hidden));
+    btn.textContent = hidden ? "How to read this" : "Hide guide";
+    if(redraw) drawLive();
+  };
+  btn.addEventListener("click", ()=>{
+    hidden=!hidden;
+    try{ localStorage.setItem("howto", hidden?"0":"1"); }catch(e){}
+    apply(true);
+  });
+  apply(false);
+})();
+
+/* ----------------------------------------------------------- episode spans */
+const EPS = (D.episodes||[]).map(e => {
+  const s = D.dates.findIndex(d => d >= e.start);
+  let t = -1;
+  for(let i=D.dates.length-1;i>=0;i--){ if(D.dates[i] <= e.end){ t = i; break; } }
+  return {name:e.name, label:EPN[e.name]||e.name, a:s, b:t};
+}).filter(e => e.a >= 0 && e.b >= e.a);
+
+document.getElementById("jump").innerHTML =
+  '<button data-i="0">Start</button>' +
+  EPS.map(e => '<button data-i="'+Math.max(0,e.a-40)+'">'+e.label+"</button>").join("");
+document.getElementById("jump").addEventListener("click", ev => {
+  const b = ev.target.closest("button"); if(!b) return;
+  setCursor(+b.dataset.i); stop();
+});
+
+/* ----------------------------------------------------------------- player */
+let cur = 0, playing = false, speed = 3, raf = null, acc = 0, lastT = 0;
+let pauseOnPanel = false, lastPanelSeen = -1;
+const scrub = document.getElementById("scrub");
+scrub.max = String(N-1);
+
+const elDate=document.getElementById("r-date"), elPx=document.getElementById("r-px"),
+      elEp=document.getElementById("r-ep"), elProg=document.getElementById("r-prog"),
+      cH=document.getElementById("call-h"), cC=document.getElementById("call-c"),
+      cTag=document.getElementById("c-tag"), rail=document.getElementById("rail");
+
+function paintCall(el, code, conf){
+  const c = col(code);
+  el.querySelector(".st").textContent = (code===null||code===undefined) ? "—" : SNAME[code];
+  el.querySelector(".st").style.color = c;
+  el.querySelector(".edge").style.background = c;
+  el.querySelector(".cf").textContent = "confidence " + (conf==null?"—":conf.toFixed(3));
+  const bar = el.querySelector(".bar i");
+  bar.style.width = ((conf||0)*100).toFixed(1) + "%";
+  bar.style.background = c;
+}
+
+function renderPanel(i){
+  const p = D.panel[i];
+  if(!p){ return; }
+  rail.classList.remove("idle");
+  document.getElementById("rail-when").textContent = "convened " + D.dates[i];
+  const inf = p.informative || {};
+  document.getElementById("rail-votes").innerHTML =
+    Object.entries(p.votes).map(([r,s]) => {
+      const ab = inf[r] === false;
+      return '<div class="vote'+(ab?" abst":"")+'"><span class="r">'
+        + r.replace(/_/g," ") + '</span><span class="v" style="color:'
+        + (ab ? "var(--muted)" : col(D.meta.states.indexOf(s))) + '">'
+        + (ab ? "abstained" : (PRETTY[s]||s)) + "</span></div>";
+    }).join("");
+  document.getElementById("rail-verdict").textContent = ACTN[p.action] || p.action;
+  document.getElementById("rail-obj").textContent = p.objection || "";
+}
+
+function setCursor(i, fromScrub){
+  cur = Math.max(0, Math.min(N-1, i));
+  if(!fromScrub) scrub.value = String(cur);
+  elDate.textContent = D.dates[cur];
+  elPx.textContent = D.close[cur]!=null ? D.close[cur].toLocaleString() : "—";
+  elProg.textContent = (cur+1).toLocaleString() + " / " + N.toLocaleString();
+
+  paintCall(cH, D.hamilton[cur], D.conf_h[cur]);
+  paintCall(cC, D.agentic[cur],  D.conf_c[cur]);
+  cTag.textContent = D.gated[cur] ? "panel sitting" : "";
+
+  const ep = EPS.find(e => cur >= e.a && cur <= e.b);
+  if(ep){ elEp.hidden = false; elEp.textContent = ep.label; }
+  else elEp.hidden = true;
+
+  // most recent sitting at or before the cursor
+  let j = -1;
+  for(let k=cur;k>=0;k--){ if(D.panel[k]){ j = k; break; } }
+  if(j >= 0) renderPanel(j);
+  drawLive();
+  return j;
+}
+
+function step(ts){
+  if(!playing) return;
+  if(!lastT) lastT = ts;
+  const dt = (ts - lastT)/1000; lastT = ts;
+  acc += dt * speed * 10;
+  const adv = Math.floor(acc);
+  if(adv > 0){
+    acc -= adv;
+    const next = cur + adv;
+    if(pauseOnPanel){
+      for(let k=cur+1;k<=Math.min(next,N-1);k++){
+        if(D.panel[k] && k !== lastPanelSeen){
+          lastPanelSeen = k; setCursor(k); stop(); return;
+        }
+      }
+    }
+    if(next >= N-1){ setCursor(N-1); stop(); return; }
+    setCursor(next);
+  }
+  raf = requestAnimationFrame(step);
+}
+function play(){ playing = true; lastT = 0; document.getElementById("play").textContent = "❚❚ Pause"; raf = requestAnimationFrame(step); }
+function stop(){ playing = false; if(raf) cancelAnimationFrame(raf); document.getElementById("play").textContent = "▶ Play"; }
+
+document.getElementById("play").addEventListener("click", () => {
+  if(playing) stop(); else { if(cur >= N-1) setCursor(0); play(); }
+});
+document.getElementById("reset").addEventListener("click", () => { stop(); setCursor(0); });
+scrub.addEventListener("input", () => { stop(); setCursor(+scrub.value, true); });
+document.getElementById("speed").addEventListener("click", ev => {
+  const b = ev.target.closest("button"); if(!b) return;
+  speed = +b.dataset.s;
+  [...ev.currentTarget.children].forEach(o => o.setAttribute("aria-pressed", String(o===b)));
+});
+document.getElementById("stopPanel").addEventListener("click", ev => {
+  pauseOnPanel = !pauseOnPanel;
+  ev.currentTarget.setAttribute("aria-pressed", String(pauseOnPanel));
+});
+addEventListener("keydown", e => {
+  if(e.target.tagName === "INPUT" || e.target.tagName === "SELECT") return;
+  if(e.code === "Space"){ e.preventDefault(); document.getElementById("play").click(); }
+  if(e.code === "ArrowRight"){ stop(); setCursor(cur+1); }
+  if(e.code === "ArrowLeft"){ stop(); setCursor(cur-1); }
+});
+
+/* ------------------------------------------------------------- live canvas */
+const live = document.getElementById("live");
+function drawLive(){
+  const dpr = devicePixelRatio||1, W = live.clientWidth, H = 330;
+  if(!W) return;
+  live.width = W*dpr; live.height = H*dpr;
+  const g = live.getContext("2d"); g.setTransform(dpr,0,0,dpr,0,0); g.clearRect(0,0,W,H);
+  const padL=58,padR=10,padT=8,priceH=150,gap=18,bandH=34,bandGap=8;
+  const pw = W-padL-padR;
+  const rule=CSSV("--rule"), muted=CSSV("--muted"), ink2=CSSV("--ink-2");
+
+  // window: everything up to the cursor, but never fewer than 260 days of context
+  const span = Math.max(260, cur+1);
+  const a = Math.max(0, cur+1-span), b = cur;
+  const nn = b-a+1;
+  if(nn < 2) return;
+
+  let lo=Infinity, hi=-Infinity;
+  for(let i=a;i<=b;i++){ const v=D.close[i]; if(v==null) continue; if(v<lo)lo=v; if(v>hi)hi=v; }
+  if(!isFinite(lo)) return;
+  const X = i => padL + ((i-a)/(nn-1))*pw;
+
+  g.strokeStyle=rule; g.lineWidth=1;
+  g.beginPath(); g.moveTo(padL,padT+priceH); g.lineTo(padL+pw,padT+priceH); g.stroke();
+
+  // episode shading
+  EPS.forEach(e=>{
+    const s=Math.max(e.a,a), t=Math.min(e.b,b);
+    if(t<s) return;
+    g.fillStyle = CSSV("--stress")+"14";
+    g.fillRect(X(s),padT,Math.max(1,X(t)-X(s)),priceH);
+  });
+
+  g.beginPath();
+  for(let i=a;i<=b;i++){
+    const v=D.close[i]; if(v==null) continue;
+    const y = padT+priceH-((v-lo)/((hi-lo)||1))*(priceH-10);
+    (i===a) ? g.moveTo(X(i),y) : g.lineTo(X(i),y);
+  }
+  g.strokeStyle=ink2; g.lineWidth=1.6; g.lineJoin="round"; g.stroke();
+
+  // cursor marker
+  const vy = D.close[b]!=null ? padT+priceH-((D.close[b]-lo)/((hi-lo)||1))*(priceH-10) : null;
+  if(vy!=null){
+    g.fillStyle=CSSV("--accent");
+    g.beginPath(); g.arc(X(b),vy,4,0,Math.PI*2); g.fill();
+  }
+  g.fillStyle=muted; g.font='500 10px "IBM Plex Mono", monospace'; g.textAlign="right";
+  g.fillText(Math.round(hi).toLocaleString(), padL-9, padT+11);
+  g.fillText(Math.round(lo).toLocaleString(), padL-9, padT+priceH-2);
+
+  const ROWS=[["truth","Truth"],["hamilton","Hamilton"],["agentic","Agentic"]];
+  const bw = pw/nn;
+  ROWS.forEach((r,ri)=>{
+    const arr = D[r[0]];
+    const y = padT+priceH+gap+ri*(bandH+bandGap);
+    for(let i=a;i<=b;i++){
+      const v=arr[i]; if(v==null) continue;
+      g.fillStyle = CSSV(SC[v]);
+      g.fillRect(X(i), y, Math.ceil(bw)+0.6, bandH);
+    }
+    g.fillStyle = ri===0 ? CSSV("--ink") : ink2;
+    g.font = (ri===0?"600":"400")+' 11px "IBM Plex Sans", sans-serif';
+    g.textAlign="right";
+    g.fillText(r[1], padL-9, y+bandH/2+4);
+    // panel ticks on the agentic row
+    if(r[0]==="agentic"){
+      g.fillStyle=CSSV("--ink");
+      for(let i=a;i<=b;i++) if(D.gated[i]) g.fillRect(X(i), y+bandH+2, Math.max(1,bw), 3);
+    }
+  });
+}
+addEventListener("resize", () => { drawLive(); drawRibbon(); });
+
+/* ---------------------------------------------------------- timeline canvas */
+const ribbon = document.getElementById("ribbon"), tip = document.getElementById("tip");
+let geo=null;
+function drawRibbon(){
+  const dpr=devicePixelRatio||1, W=ribbon.clientWidth, H=400;
+  if(!W) return;
+  ribbon.width=W*dpr; ribbon.height=H*dpr;
+  const g=ribbon.getContext("2d"); g.setTransform(dpr,0,0,dpr,0,0); g.clearRect(0,0,W,H);
+  const padL=92,padR=12,padT=26,priceH=120,gap=22,bandH=42,bandGap=9;
+  const pw=W-padL-padR, rule=CSSV("--rule"), muted=CSSV("--muted"), ink2=CSSV("--ink-2");
+  const X = i => padL + (i/(N-1))*pw;
+
+  let lo=Infinity,hi=-Infinity;
+  D.close.forEach(v=>{ if(v==null)return; if(v<lo)lo=v; if(v>hi)hi=v; });
+
+  // panel-sitting ticks above everything
+  g.fillStyle=CSSV("--muted");
+  for(let i=0;i<N;i++) if(D.gated[i]) g.fillRect(X(i),padT-16,1,7);
+  g.font='400 9px "IBM Plex Mono", monospace'; g.textAlign="right";
+  g.fillText("panel sat", padL-9, padT-10);
+
+  g.strokeStyle=rule; g.beginPath(); g.moveTo(padL,padT+priceH); g.lineTo(padL+pw,padT+priceH); g.stroke();
+  g.beginPath();
+  D.close.forEach((v,i)=>{ if(v==null)return;
+    const y=padT+priceH-((v-lo)/((hi-lo)||1))*(priceH-10);
+    i===0?g.moveTo(X(i),y):g.lineTo(X(i),y); });
+  g.strokeStyle=ink2; g.lineWidth=1.3; g.stroke();
+  g.fillStyle=muted; g.font='500 10px "IBM Plex Mono", monospace'; g.textAlign="right";
+  g.fillText("S&P 500", padL-9, padT+11);
+
+  const ROWS=[["truth","Ground truth"],["hamilton","Hamilton 1989"],["agentic","Agentic panel"]];
+  const bw=pw/N;
+  ROWS.forEach((r,ri)=>{
+    const arr=D[r[0]], y=padT+priceH+gap+ri*(bandH+bandGap);
+    for(let i=0;i<N;i++){ const v=arr[i]; if(v==null) continue;
+      g.fillStyle=CSSV(SC[v]); g.fillRect(X(i),y,Math.ceil(bw)+0.6,bandH); }
+    g.fillStyle= ri===0?CSSV("--ink"):ink2;
+    g.font=(ri===0?"600":"400")+' 11.5px "IBM Plex Sans", sans-serif';
+    g.textAlign="right"; g.fillText(r[1], padL-9, y+bandH/2+4);
+  });
+
+  const yT=padT+priceH+gap+ROWS.length*(bandH+bandGap);
+  g.strokeStyle=rule; g.fillStyle=muted; g.font='400 10px "IBM Plex Mono", monospace'; g.textAlign="center";
+  let last="";
+  D.dates.forEach((d,i)=>{
+    const yr=d.slice(0,4);
+    if(yr===last||(+yr)%2){ last=yr; return; }
+    last=yr;
+    g.beginPath(); g.moveTo(X(i),yT); g.lineTo(X(i),yT+5); g.stroke();
+    g.fillText(yr,X(i),yT+18);
+  });
+  geo={padL,pw};
+}
+ribbon.addEventListener("pointermove", ev=>{
+  if(!geo) return;
+  const rect=ribbon.getBoundingClientRect(), x=ev.clientX-rect.left;
+  const i=Math.round(((x-geo.padL)/geo.pw)*(N-1));
+  if(i<0||i>=N){ tip.style.opacity=0; return; }
+  let h='<div class="t-d">'+D.dates[i]+"</div>";
+  [["Truth",D.truth[i]],["Hamilton",D.hamilton[i]],["Agentic",D.agentic[i]]].forEach(r=>{
+    h+='<div class="t-r"><span>'+r[0]+'</span><span style="color:'+col(r[1])+'">'
+      +(r[1]==null?"—":SNAME[r[1]])+"</span></div>";
+  });
+  if(D.close[i]!=null) h+='<div class="t-r"><span>S&amp;P 500</span><span>'+D.close[i].toLocaleString()+"</span></div>";
+  if(D.gated[i]) h+='<div class="t-r"><span>Panel</span><span>convened</span></div>';
+  tip.innerHTML=h; tip.style.opacity=1;
+  const tw=tip.offsetWidth;
+  tip.style.left=Math.min(Math.max(x-tw/2,0),ribbon.clientWidth-tw)+"px";
+  tip.style.top="4px";
+});
+ribbon.addEventListener("pointerleave",()=>tip.style.opacity=0);
+
+/* ------------------------------------------------------------- lead table */
+(function(){
+  const L=D.lead||{}, H=L.hamilton||[], C=L.agentic||[];
+  if(!H.length) return;
+  let h="<thead><tr><th>Episode</th><th>Onset</th><th>Hamilton</th><th>Agentic panel</th></tr></thead><tbody>";
+  H.forEach((r,i)=>{
+    const c=C[i]||{};
+    const cell=v=>(v==null)?"<td>—</td>"
+      :"<td class='"+(v>0?"win":"lose")+"'>"+(v>0?"+":"")+v+" d</td>";
+    h+="<tr><td class='rowlab'>"+(EPN[r.episode]||r.episode)+"</td><td>"
+      +String(r.onset).slice(0,10)+"</td>"+cell(r.lead_days)+cell(c.lead_days)+"</tr>";
+  });
+  document.getElementById("tbl-lead").innerHTML=h+"</tbody>";
+})();
+
+/* ------------------------------------------------------------ panel browser */
+(function(){
+  const keys=Object.keys(D.panel).map(Number).sort((a,b)=>a-b);
+  const acts={}, crit={};
+  keys.forEach(k=>{ const p=D.panel[k];
+    acts[p.action]=(acts[p.action]||0)+1; crit[p.critic]=(crit[p.critic]||0)+1; });
+  document.getElementById("panel-stats").innerHTML=[
+    [keys.length, "days the panel convened"],
+    [(acts.veto||0), "vetoes — labels actually changed"],
+    [(acts.override_blocked_not_unanimous||0), "overrides blocked by the unanimity gate"],
+    [keys.length*5, "model calls, zero failures"],
+  ].map(s=>'<div class="stat"><div class="n">'+s[0].toLocaleString()
+        +'</div><div class="l">'+s[1]+"</div></div>").join("");
+
+  const sel=document.getElementById("pday"), filt=document.getElementById("pfilter");
+  function fill(){
+    const f=filt.value;
+    const ks=keys.filter(k=>{
+      const p=D.panel[k];
+      if(f==="all") return true;
+      if(f==="blocked") return p.action==="override_blocked_not_unanimous";
+      return p.action===f;
+    });
+    sel.innerHTML=ks.map(k=>'<option value="'+k+'">'+D.dates[k]
+      +"  ·  "+(ACTN[D.panel[k].action]||D.panel[k].action)+"</option>").join("");
+    if(ks.length) show(ks[0]);
+    else document.getElementById("pdetail").innerHTML="<p class='sub2'>No sittings match.</p>";
+  }
+  function show(k){
+    const p=D.panel[k];
+    const inf=p.informative||{};
+    const votes=Object.entries(p.votes).map(([r,s])=>{
+      const ab=inf[r]===false;
+      return "<tr><td class='rowlab'>"+r.replace(/_/g," ")+"</td><td style='color:"
+        +(ab?"var(--muted)":col(D.meta.states.indexOf(s)))+"'>"
+        +(ab?"abstained":(PRETTY[s]||s))+"</td></tr>";
+    }).join("");
+    document.getElementById("pdetail").innerHTML=
+      "<div class='grid'><div class='stat'><div class='n' style='font-size:1.05rem'>"
+      + (PRETTY[""]||"") + D.dates[k] + "</div><div class='l'>Detector proposed <b style='color:"
+      + col(D.detector[k]) + "'>" + SNAME[D.detector[k]] + "</b>, panel emitted <b style='color:"
+      + col(D.agentic[k]) + "'>" + SNAME[D.agentic[k]] + "</b></div></div>"
+      + "<div class='stat'><div class='n' style='font-size:1.05rem'>"+(ACTN[p.action]||p.action)
+      + "</div><div class='l'>Critic verdict: "+p.critic+" · recency-bias risk "+p.recency+"</div></div></div>"
+      + "<div class='scroll'><table><thead><tr><th>Specialist</th><th>Vote</th></tr></thead><tbody>"
+      + votes + "</tbody></table></div>"
+      + "<h3 style='margin:18px 0 6px'>The critic's objection</h3><p style='font-size:.88rem;color:var(--ink-2)'>"
+      + (p.objection||"—") + "</p>"
+      + "<h3 style='margin:14px 0 6px'>What would falsify the call</h3><p style='font-size:.88rem;color:var(--ink-2)'>"
+      + (p.falsifier||"—") + "</p>";
+  }
+  filt.addEventListener("change", fill);
+  sel.addEventListener("change", () => show(+sel.value));
+  fill();
+})();
+
+/* ------------------------------------------------------------ transcripts */
+(function(){
+  const TX = D.tx;
+  const tab = document.getElementById("tab-tx");
+  if(!TX || !TX.calls || !Object.keys(TX.calls).length){ if(tab) tab.hidden = true; return; }
+
+  const esc = s => String(s==null?"":s)
+    .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+  const keys = Object.keys(TX.calls).map(Number).sort((a,b)=>a-b);
+  const sel = document.getElementById("tx-day");
+  const filt = document.getElementById("tx-filter");
+  let view = keys.slice();
+
+  function matches(k, f){
+    const c = TX.calls[k];
+    if(f === "all") return true;
+    if(f === "veto") return c.proposal && c.emitted !== c.proposal.label;
+    if(f === "news") return c.news_sentiment && c.news_sentiment.news_today === true;
+    if(f === "abstain") return TX.roles.some(r => c[r] && c[r].inf === false);
+    return c.critic && c.critic.verdict === "override" && c.emitted === c.proposal.label;
+  }
+
+  function fill(){
+    view = keys.filter(k => matches(k, filt.value));
+    sel.innerHTML = view.map(k => {
+      const c = TX.calls[k];
+      const flag = (c.proposal && c.emitted !== c.proposal.label) ? "  ·  VETO" : "";
+      return '<option value="'+k+'">'+c.date+flag+"</option>";
+    }).join("");
+    document.getElementById("tx-count").textContent =
+      view.length + " of " + keys.length + " sittings";
+    if(view.length) render(view[0]); else {
+      document.getElementById("tx-head").innerHTML = "";
+      document.getElementById("tx-body").innerHTML =
+        "<div class='card'><p class='sub2'>No sittings match that filter.</p></div>";
+    }
+  }
+
+  function zTable(role, rec){
+    const cols = TX.features[role] || [];
+    if(!cols.length) return "<p class='sub2'>This specialist had no columns.</p>";
+    let h = "<div class='scroll'><table class='ztab'><thead><tr><th>Feature</th>"
+          + TX.periods.map(p=>"<th>"+p+"</th>").join("") + "</tr></thead><tbody>";
+    cols.forEach((c,ci)=>{
+      h += "<tr><td class='rowlab'>"+esc(c)+"</td>";
+      TX.periods.forEach((p,pi)=>{
+        const v = (rec.z[pi]||[])[ci];
+        const isNow = pi === TX.periods.length-1;
+        const big = typeof v === "number" && Math.abs(v) >= 2;
+        h += "<td class='"+(isNow?"now":"")+"'>"
+          + (typeof v === "number"
+              ? "<span class='"+(big?"zhi":"")+"'>"+(v>0?"+":"")+v.toFixed(2)+"</span>"
+              : "—")
+          + "</td>";
+      });
+      h += "</tr>";
+    });
+    return h + "</tbody></table></div>";
+  }
+
+  function speakerCard(role, rec){
+    if(!rec) return "";
+    const abst = rec.inf === false;
+    const stateCol = abst ? "var(--muted)" : col(D.meta.states.indexOf(rec.state));
+    let extra = "";
+    if(role === "news_sentiment"){
+      // Two tracks with different coverage: single-stock headlines start in
+      // 2011, market-wide wire copy in 2007. One badge would hide which of
+      // them was actually dark on a given day.
+      const badge = (on, label) =>
+        "<span class='badge"+(on?"":" abst")+"'>"+label+(on?"":" — decayed echo")+"</span>";
+      extra = badge(rec.stock_news !== false && rec.stock_news !== undefined
+                      ? rec.stock_news : rec.news_today, "single-stock")
+            + " " + badge(!!rec.market_news, "market-wide");
+    }
+    return "<div class='spk'><div class='sh'>"
+      + "<span class='role'>"+esc(role.replace(/_/g," "))+"</span>"
+      + "<span class='said' style='color:"+stateCol+"'>"
+      + (abst ? "abstained" : (PRETTY[rec.state]||rec.state)) + "</span>"
+      + extra
+      + "<span class='meta'>confidence "+(rec.conf==null?"—":rec.conf.toFixed(2))
+      + "  ·  says "+esc(rec.adj)+"</span></div>"
+      + "<div class='bd'><div><h4>What it was shown</h4>"+zTable(role,rec)+"</div>"
+      + "<div><h4>What it replied</h4><p class='why'>"+esc(rec.why)+"</p></div></div>"
+      + "<div style='padding:0 18px 16px'><details class='sysp'><summary>"
+      + "Show the system prompt sent to this specialist</summary><pre>"
+      + esc(TX.systems[role]) + "</pre></details></div></div>";
+  }
+
+  function render(k){
+    const c = TX.calls[k];
+    if(!c) return;
+    const changed = c.proposal && c.emitted !== c.proposal.label;
+    document.getElementById("tx-head").innerHTML =
+      "<div class='txhead'><div class='d'>"+esc(c.date)+"</div><div class='row'>"
+      + "<div><span>Detector proposed</span><b style='color:"
+        + col(D.meta.states.indexOf(c.proposal.label))+"'>"
+        + (PRETTY[c.proposal.label]||c.proposal.label)+"</b> at "
+        + c.proposal.confidence.toFixed(4)+"</div>"
+      + "<div><span>Panel emitted</span><b style='color:"
+        + col(D.meta.states.indexOf(c.emitted))+"'>"
+        + (PRETTY[c.emitted]||c.emitted)+"</b></div>"
+      + "<div><span>Outcome</span>"
+        + (changed ? "<span class='badge veto'>label changed</span>"
+                   : "<span class='badge'>label kept</span>")+"</div>"
+      + "</div></div>";
+
+    let body = TX.roles.map(r => speakerCard(r, c[r])).join("");
+    if(c.critic){
+      body += "<div class='spk'><div class='sh'>"
+        + "<span class='role'>critic</span>"
+        + "<span class='said'>"+esc(c.critic.verdict)+"</span>"
+        + "<span class='meta'>confidence x"+(c.critic.mult==null?"—":c.critic.mult)
+        + "  ·  recency-bias risk "+esc(c.critic.recency)+"</span></div>"
+        + "<div class='bd' style='grid-template-columns:1fr'>"
+        + "<div><h4>Its objection</h4><p class='why'>"+esc(c.critic.obj)+"</p>"
+        + "<h4 style='margin-top:14px'>What would falsify the call</h4>"
+        + "<p class='why'>"+esc(c.critic.fals)+"</p></div></div>"
+        + "<div style='padding:0 18px 16px'><details class='sysp'><summary>"
+        + "Show the system prompt sent to the critic</summary><pre>"
+        + esc(TX.systems.critic)+"</pre></details></div></div>";
+    }
+    document.getElementById("tx-body").innerHTML = body;
+  }
+
+  sel.addEventListener("change", ()=>render(+sel.value));
+  filt.addEventListener("change", fill);
+  const hop = d => {
+    const i = view.indexOf(+sel.value);
+    const j = Math.max(0, Math.min(view.length-1, i+d));
+    sel.value = String(view[j]); render(view[j]);
+  };
+  document.getElementById("tx-prev").addEventListener("click", ()=>hop(-1));
+  document.getElementById("tx-next").addEventListener("click", ()=>hop(1));
+  fill();
+})();
+
+/* ---------------------------------------------------------------- numbers */
+const ROWDEF=[["brier","Brier score",4,"low"],["bss_vs_persistence","Skill vs persistence",4,"high"],
+  ["bss_vs_climatology","Skill vs climatology",4,"high"],["accuracy","Accuracy",4,"high"],
+  ["kappa_vs_target","Cohen's κ",4,"high"],["reliability","Reliability (lower better)",4,"low"],
+  ["resolution","Resolution (higher better)",4,"high"],["n_episodes","Episodes",0,null],
+  ["false_alarms_per_year","False alarms / yr",2,null]];
+const COLS=["A_hamilton","C_agentic","B_hmm","Z_persistence","Z_climatology"];
+const CN={A_hamilton:"Hamilton",C_agentic:"Agentic",B_hmm:"Detector alone",
+          Z_persistence:"Persistence",Z_climatology:"Climatology"};
+function scoreTable(el,data){
+  if(!el||!data||!Object.keys(data).length) return;
+  const cols=COLS.filter(c=>data[c]);
+  let h="<thead><tr><th>Metric</th>"+cols.map(c=>"<th>"+CN[c]+"</th>").join("")+"</tr></thead><tbody>";
+  h+="<tr><td class='rowlab'>n</td>"+cols.map(c=>"<td>"+Math.round(data[c].n).toLocaleString()+"</td>").join("")+"</tr>";
+  ROWDEF.forEach(([k,lab,dp,dir])=>{
+    const vals=cols.map(c=>data[c][k]);
+    let best=null;
+    if(dir){ const arms=cols.slice(0,3).map(c=>data[c][k]).filter(v=>typeof v==="number");
+      if(arms.length) best = dir==="high"?Math.max(...arms):Math.min(...arms); }
+    h+="<tr><td class='rowlab'>"+lab+"</td>"
+      +vals.map(v=>"<td"+(dir&&v===best?" class='win'":"")+">"+(typeof v==="number"?v.toFixed(dp):"—")+"</td>").join("")+"</tr>";
+  });
+  el.innerHTML=h+"</tbody>";
+}
+scoreTable(document.getElementById("tbl-full"), D.scopes);
+scoreTable(document.getElementById("tbl-gated"), D.scopes_gated);
+(function(){
+  const t=D.tests||{}, ks=Object.keys(t); if(!ks.length) return;
+  const NM={A_hamilton:"Hamilton",B_hmm:"Detector alone",C_agentic:"Agentic panel"};
+  let h="<thead><tr><th>Comparison</th><th>DM stat</th><th>p</th><th>Mean Brier diff</th><th>95% CI</th></tr></thead><tbody>";
+  ks.forEach(k=>{
+    const v=t[k], dm=v.dm_brier||{}, ci=v.brier_diff_ci||{};
+    h+="<tr><td class='rowlab'>"+k.split("_vs_").map(s=>NM[s]||s).join("  vs  ")+"</td>"
+      +"<td>"+fmt(dm.dm_stat,2)+"</td><td>"+(dm.p_value<0.0001?"&lt;0.0001":fmt(dm.p_value,4))+"</td>"
+      +"<td>"+(ci.diff>0?"+":"")+fmt(ci.diff,4)+"</td>"
+      +"<td>["+fmt(ci.ci_low,4)+", "+fmt(ci.ci_high,4)+"]</td></tr>";
+  });
+  document.getElementById("tbl-tests").innerHTML=h+"</tbody>";
+})();
+
+/* -------------------------------------------------------------------- boot */
+setCursor(0);
+document.fonts && document.fonts.ready.then(()=>{ drawLive(); drawRibbon(); });
+</script>

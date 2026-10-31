@@ -1,0 +1,25 @@
+{
+  "date": "2019-03",
+  "model": "claude-sonnet-4-6",
+  "briefing": "## RS allocation cycle 2019-03\n\nYou are setting the decision parameters for a regime-switching optimal\nportfolio (Markose & Yang). The optimiser itself is fixed and will run\nwhatever you specify. Your job is to judge how far the model should be\ntrusted this month, given the diagnostics below.\n\n### Regime filter\n- Label this month: **bull**\n- P(bull) now: 0.88\n- P(bull) last 6 months (oldest first): 0.85, 0.92, 0.52, 0.63, 0.79, 0.88\n- Label changes in that window: 0\n\n### Conditional moments the optimiser would use (Eqs. 15-16)\n- If bull: mean +0.884%/mo, sd 4.07%/mo\n- If bear: mean -1.010%/mo, sd 5.34%/mo\n- Separation between the two states: 1.895 percentage points of monthly mean\n\n### Estimation health (CAPM, point-in-time)\n- Months of history used: 170\n- Mean R-squared across the eight stocks: 0.30\n- Beta range: 0.58 to 1.69\n- Largest beta move since last month: AMZN -0.01\n\n### What the optimiser wants before any cap\n- Largest single position: AAPL at 35%\n- Gross exposure: 100%\n- Names above 20%: 2\n\n### How this model's recent decisions turned out\n- Last 12 months: mean +0.63%/mo, 7 of 12 positive\n- Most recent month: +0.84%\n\n### Decide\nSet `gamma` (higher is more risk averse), `regime_treatment`\n(`hard_label` follows the filter, `probability_blend` weights both\nstates by P(bull)), and `max_position_pct` (a fraction; 1.00 is no cap).\nReply with the JSON object only.",
+  "raw_text": "{\"gamma\":6,\"regime_treatment\":\"hard_label\",\"max_position_pct\":0.25,\"rationale\":\"The filter is confident and stable (P(bull)=0.88, no label changes, only one mid-window dip), and CAPM history is deep (170 months), so the classical gamma and hard-label treatment are appropriate. However, two names exceed 20% and AAPL alone wants 35%, which is an outsized concentration for modest R-squared (0.30), so a 25% cap is applied to limit single-name risk without otherwise overriding the model.\"}",
+  "raw_parsed": {
+    "gamma": 6,
+    "regime_treatment": "hard_label",
+    "max_position_pct": 0.25,
+    "rationale": "The filter is confident and stable (P(bull)=0.88, no label changes, only one mid-window dip), and CAPM history is deep (170 months), so the classical gamma and hard-label treatment are appropriate. However, two names exceed 20% and AAPL alone wants 35%, which is an outsized concentration for modest R-squared (0.30), so a 25% cap is applied to limit single-name risk without otherwise overriding the model."
+  },
+  "accepted": true,
+  "reject_reason": "",
+  "posture": {
+    "gamma": 6.0,
+    "regime_treatment": "hard_label",
+    "max_position_pct": 0.25,
+    "rationale": "The filter is confident and stable (P(bull)=0.88, no label changes, only one mid-window dip), and CAPM history is deep (170 months), so the classical gamma and hard-label treatment are appropriate. However, two names exceed 20% and AAPL alone wants 35%, which is an outsized concentration for modest R-squared (0.30), so a 25% cap is applied to limit single-name risk without otherwise overriding the"
+  },
+  "usage": {
+    "input_tokens": 1045,
+    "output_tokens": 139,
+    "latency_ms": 5124.7
+  }
+}

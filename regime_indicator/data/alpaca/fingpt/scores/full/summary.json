@@ -1,0 +1,11 @@
+{
+ "scored": 67624,
+ "label_share": {
+  "neutral": 0.463,
+  "positive": 0.276,
+  "negative": 0.261
+ },
+ "score_mean": 0.019,
+ "label_mass_median": 1.0,
+ "label_mass_p05": 0.233
+}

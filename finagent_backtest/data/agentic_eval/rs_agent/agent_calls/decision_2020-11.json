@@ -1,0 +1,25 @@
+{
+  "date": "2020-11",
+  "model": "claude-sonnet-4-6",
+  "briefing": "## RS allocation cycle 2020-11\n\nYou are setting the decision parameters for a regime-switching optimal\nportfolio (Markose & Yang). The optimiser itself is fixed and will run\nwhatever you specify. Your job is to judge how far the model should be\ntrusted this month, given the diagnostics below.\n\n### Regime filter\n- Label this month: **bull**\n- P(bull) now: 0.72\n- P(bull) last 6 months (oldest first): 0.57, 0.73, 0.81, 0.78, 0.79, 0.72\n- Label changes in that window: 0\n\n### Conditional moments the optimiser would use (Eqs. 15-16)\n- If bull: mean +0.884%/mo, sd 4.07%/mo\n- If bear: mean -1.010%/mo, sd 5.34%/mo\n- Separation between the two states: 1.895 percentage points of monthly mean\n\n### Estimation health (CAPM, point-in-time)\n- Months of history used: 190\n- Mean R-squared across the eight stocks: 0.34\n- Beta range: 0.62 to 1.59\n- Largest beta move since last month: GOOGL -0.01\n\n### What the optimiser wants before any cap\n- Largest single position: AAPL at 36%\n- Gross exposure: 100%\n- Names above 20%: 2\n\n### How this model's recent decisions turned out\n- Last 12 months: mean +3.06%/mo, 8 of 12 positive\n- Most recent month: -2.39%\n\n### Decide\nSet `gamma` (higher is more risk averse), `regime_treatment`\n(`hard_label` follows the filter, `probability_blend` weights both\nstates by P(bull)), and `max_position_pct` (a fraction; 1.00 is no cap).\nReply with the JSON object only.",
+  "raw_text": "{\"gamma\":7,\"regime_treatment\":\"probability_blend\",\"max_position_pct\":0.25,\"rationale\":\"P(bull) at 0.72 is moderately confident but not high, and the most recent month was -2.39%, suggesting some near-term uncertainty; probability_blend is safer given filter uncertainty. Two names above 20% with AAPL at 36% is a concentration risk, so a 25% cap is warranted, and a slightly elevated gamma of 7 tempers overall risk given the weak CAPM fit (R-squared 0.34) and modest state separation of 1.895pp.\"}",
+  "raw_parsed": {
+    "gamma": 7,
+    "regime_treatment": "probability_blend",
+    "max_position_pct": 0.25,
+    "rationale": "P(bull) at 0.72 is moderately confident but not high, and the most recent month was -2.39%, suggesting some near-term uncertainty; probability_blend is safer given filter uncertainty. Two names above 20% with AAPL at 36% is a concentration risk, so a 25% cap is warranted, and a slightly elevated gamma of 7 tempers overall risk given the weak CAPM fit (R-squared 0.34) and modest state separation of 1.895pp."
+  },
+  "accepted": true,
+  "reject_reason": "",
+  "posture": {
+    "gamma": 7.0,
+    "regime_treatment": "probability_blend",
+    "max_position_pct": 0.25,
+    "rationale": "P(bull) at 0.72 is moderately confident but not high, and the most recent month was -2.39%, suggesting some near-term uncertainty; probability_blend is safer given filter uncertainty. Two names above 20% with AAPL at 36% is a concentration risk, so a 25% cap is warranted, and a slightly elevated gamma of 7 tempers overall risk given the weak CAPM fit (R-squared 0.34) and modest state separation of"
+  },
+  "usage": {
+    "input_tokens": 1044,
+    "output_tokens": 146,
+    "latency_ms": 4339.9
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "date": "2013-07",
+  "model": "claude-sonnet-4-6",
+  "briefing": "## RS allocation cycle 2013-07\n\nYou are setting the decision parameters for a regime-switching optimal\nportfolio (Markose & Yang). The optimiser itself is fixed and will run\nwhatever you specify. Your job is to judge how far the model should be\ntrusted this month, given the diagnostics below.\n\n### Regime filter\n- Label this month: **bull**\n- P(bull) now: 0.97\n- P(bull) last 6 months (oldest first): 0.97, 0.97, 0.97, 0.98, 0.96, 0.97\n- Label changes in that window: 0\n\n### Conditional moments the optimiser would use (Eqs. 15-16)\n- If bull: mean +0.884%/mo, sd 4.07%/mo\n- If bear: mean -1.010%/mo, sd 5.34%/mo\n- Separation between the two states: 1.895 percentage points of monthly mean\n\n### Estimation health (CAPM, point-in-time)\n- Months of history used: 102\n- Mean R-squared across the eight stocks: 0.30\n- Beta range: 0.52 to 1.66\n- Largest beta move since last month: AAPL +0.01\n\n### What the optimiser wants before any cap\n- Largest single position: AAPL at 40%\n- Gross exposure: 100%\n- Names above 20%: 3\n\n### How this model's recent decisions turned out\n- Last 12 months: mean +0.44%/mo, 8 of 12 positive\n- Most recent month: -2.79%\n\n### Decide\nSet `gamma` (higher is more risk averse), `regime_treatment`\n(`hard_label` follows the filter, `probability_blend` weights both\nstates by P(bull)), and `max_position_pct` (a fraction; 1.00 is no cap).\nReply with the JSON object only.",
+  "raw_text": "{\"gamma\":6,\"regime_treatment\":\"hard_label\",\"max_position_pct\":0.35,\"rationale\":\"The filter is extremely stable (P(bull)=0.97 for 6 consecutive months, zero label changes), so hard_label and default gamma are appropriate. However, 3 names above 20% with the largest at 40% represents meaningful concentration risk given modest R-squared (0.30) and a rough recent month (-2.79%), so a 35% single-name cap is applied to trim the tail without over-riding the model.\"}",
+  "raw_parsed": {
+    "gamma": 6,
+    "regime_treatment": "hard_label",
+    "max_position_pct": 0.35,
+    "rationale": "The filter is extremely stable (P(bull)=0.97 for 6 consecutive months, zero label changes), so hard_label and default gamma are appropriate. However, 3 names above 20% with the largest at 40% represents meaningful concentration risk given modest R-squared (0.30) and a rough recent month (-2.79%), so a 35% single-name cap is applied to trim the tail without over-riding the model."
+  },
+  "accepted": true,
+  "reject_reason": "",
+  "posture": {
+    "gamma": 6.0,
+    "regime_treatment": "hard_label",
+    "max_position_pct": 0.35,
+    "rationale": "The filter is extremely stable (P(bull)=0.97 for 6 consecutive months, zero label changes), so hard_label and default gamma are appropriate. However, 3 names above 20% with the largest at 40% represents meaningful concentration risk given modest R-squared (0.30) and a rough recent month (-2.79%), so a 35% single-name cap is applied to trim the tail without over-riding the model."
+  },
+  "usage": {
+    "input_tokens": 1045,
+    "output_tokens": 130,
+    "latency_ms": 4888.5
+  }
+}

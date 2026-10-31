@@ -1,0 +1,25 @@
+{
+  "date": "2008-06",
+  "model": "claude-sonnet-4-6",
+  "briefing": "## RS allocation cycle 2008-06\n\nYou are setting the decision parameters for a regime-switching optimal\nportfolio (Markose & Yang). The optimiser itself is fixed and will run\nwhatever you specify. Your job is to judge how far the model should be\ntrusted this month, given the diagnostics below.\n\n### Regime filter\n- Label this month: **bull**\n- P(bull) now: 0.67\n- P(bull) last 6 months (oldest first): 0.83, 0.81, 0.87, 0.92, 0.95, 0.67\n- Label changes in that window: 0\n\n### Conditional moments the optimiser would use (Eqs. 15-16)\n- If bull: mean +0.884%/mo, sd 4.07%/mo\n- If bear: mean -1.010%/mo, sd 5.34%/mo\n- Separation between the two states: 1.895 percentage points of monthly mean\n\n### Estimation health (CAPM, point-in-time)\n- Months of history used: 41\n- Mean R-squared across the eight stocks: 0.25\n- Beta range: 0.33 to 3.10\n- Largest beta move since last month: NVDA +0.05\n\n### What the optimiser wants before any cap\n- Largest single position: AAPL at 32%\n- Gross exposure: 64%\n- Names above 20%: 1\n\n### How this model's recent decisions turned out\n- Last 5 months: mean -1.31%/mo, 3 of 5 positive\n- Most recent month: +2.81%\n\n### Decide\nSet `gamma` (higher is more risk averse), `regime_treatment`\n(`hard_label` follows the filter, `probability_blend` weights both\nstates by P(bull)), and `max_position_pct` (a fraction; 1.00 is no cap).\nReply with the JSON object only.",
+  "raw_text": "{\"gamma\":8,\"regime_treatment\":\"probability_blend\",\"max_position_pct\":0.25,\"rationale\":\"P(bull) dropped sharply to 0.67 from 0.95 last month, signaling meaningful filter uncertainty despite no label change, so probability_blend is safer than hard_label. The CAPM fit is weak (mean R\u00b2=0.25) and recent performance has been poor (-1.31%/mo over 5 months), warranting higher risk aversion (gamma=8) and capping AAPL's unconstrained 32% position at 25% to prevent excessive concentration in a noisy estimation environment.\"}",
+  "raw_parsed": {
+    "gamma": 8,
+    "regime_treatment": "probability_blend",
+    "max_position_pct": 0.25,
+    "rationale": "P(bull) dropped sharply to 0.67 from 0.95 last month, signaling meaningful filter uncertainty despite no label change, so probability_blend is safer than hard_label. The CAPM fit is weak (mean R\u00b2=0.25) and recent performance has been poor (-1.31%/mo over 5 months), warranting higher risk aversion (gamma=8) and capping AAPL's unconstrained 32% position at 25% to prevent excessive concentration in a noisy estimation environment."
+  },
+  "accepted": true,
+  "reject_reason": "",
+  "posture": {
+    "gamma": 8.0,
+    "regime_treatment": "probability_blend",
+    "max_position_pct": 0.25,
+    "rationale": "P(bull) dropped sharply to 0.67 from 0.95 last month, signaling meaningful filter uncertainty despite no label change, so probability_blend is safer than hard_label. The CAPM fit is weak (mean R\u00b2=0.25) and recent performance has been poor (-1.31%/mo over 5 months), warranting higher risk aversion (gamma=8) and capping AAPL's unconstrained 32% position at 25% to prevent excessive concentration in a"
+  },
+  "usage": {
+    "input_tokens": 1044,
+    "output_tokens": 150,
+    "latency_ms": 4571.4
+  }
+}

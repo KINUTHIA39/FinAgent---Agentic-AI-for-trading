@@ -1,0 +1,25 @@
+{
+  "date": "2021-03",
+  "model": "claude-sonnet-4-6",
+  "briefing": "## RS allocation cycle 2021-03\n\nYou are setting the decision parameters for a regime-switching optimal\nportfolio (Markose & Yang). The optimiser itself is fixed and will run\nwhatever you specify. Your job is to judge how far the model should be\ntrusted this month, given the diagnostics below.\n\n### Regime filter\n- Label this month: **bull**\n- P(bull) now: 0.95\n- P(bull) last 6 months (oldest first): 0.79, 0.72, 0.84, 0.88, 0.93, 0.95\n- Label changes in that window: 0\n\n### Conditional moments the optimiser would use (Eqs. 15-16)\n- If bull: mean +0.884%/mo, sd 4.07%/mo\n- If bear: mean -1.010%/mo, sd 5.34%/mo\n- Separation between the two states: 1.895 percentage points of monthly mean\n\n### Estimation health (CAPM, point-in-time)\n- Months of history used: 194\n- Mean R-squared across the eight stocks: 0.33\n- Beta range: 0.62 to 1.55\n- Largest beta move since last month: XOM +0.01\n\n### What the optimiser wants before any cap\n- Largest single position: AAPL at 35%\n- Gross exposure: 100%\n- Names above 20%: 2\n\n### How this model's recent decisions turned out\n- Last 12 months: mean +2.64%/mo, 8 of 12 positive\n- Most recent month: -1.14%\n\n### Decide\nSet `gamma` (higher is more risk averse), `regime_treatment`\n(`hard_label` follows the filter, `probability_blend` weights both\nstates by P(bull)), and `max_position_pct` (a fraction; 1.00 is no cap).\nReply with the JSON object only.",
+  "raw_text": "{\"gamma\":6,\"regime_treatment\":\"hard_label\",\"max_position_pct\":0.35,\"rationale\":\"The filter is highly confident (P(bull)=0.95), stable with zero label changes and a clear trend, and the conditional moments are well-separated, so hard_label and the classical gamma are appropriate. However, the optimiser wants AAPL at 35% and two names above 20%, which is a meaningful concentration risk given the modest R-squared of 0.33; capping at 35% preserves the top conviction call while preventing unchecked single-name dominance.\"}",
+  "raw_parsed": {
+    "gamma": 6,
+    "regime_treatment": "hard_label",
+    "max_position_pct": 0.35,
+    "rationale": "The filter is highly confident (P(bull)=0.95), stable with zero label changes and a clear trend, and the conditional moments are well-separated, so hard_label and the classical gamma are appropriate. However, the optimiser wants AAPL at 35% and two names above 20%, which is a meaningful concentration risk given the modest R-squared of 0.33; capping at 35% preserves the top conviction call while preventing unchecked single-name dominance."
+  },
+  "accepted": true,
+  "reject_reason": "",
+  "posture": {
+    "gamma": 6.0,
+    "regime_treatment": "hard_label",
+    "max_position_pct": 0.35,
+    "rationale": "The filter is highly confident (P(bull)=0.95), stable with zero label changes and a clear trend, and the conditional moments are well-separated, so hard_label and the classical gamma are appropriate. However, the optimiser wants AAPL at 35% and two names above 20%, which is a meaningful concentration risk given the modest R-squared of 0.33; capping at 35% preserves the top conviction call while pr"
+  },
+  "usage": {
+    "input_tokens": 1043,
+    "output_tokens": 138,
+    "latency_ms": 4382.7
+  }
+}

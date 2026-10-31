@@ -1,0 +1,15 @@
+{
+  "posture": {
+    "cap_pos": null,
+    "defensive_cap": null,
+    "sizing": "score_weighted",
+    "regime_mult": null,
+    "reduce_only": false,
+    "halt": false,
+    "flagged": []
+  },
+  "used_fallback": false,
+  "session_sha256": "29eb7ee234c1841a9b91dc0e5c94fc993b6d93f75ef4d22cf10b3d7d3e7c4b1c",
+  "n_nodes": 7,
+  "cached_at": "2026-09-03T15:20:21.976742+00:00"
+}

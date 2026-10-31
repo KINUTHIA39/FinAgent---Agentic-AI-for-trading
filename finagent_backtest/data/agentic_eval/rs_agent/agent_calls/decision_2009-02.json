@@ -1,0 +1,25 @@
+{
+  "date": "2009-02",
+  "model": "claude-sonnet-4-6",
+  "briefing": "## RS allocation cycle 2009-02\n\nYou are setting the decision parameters for a regime-switching optimal\nportfolio (Markose & Yang). The optimiser itself is fixed and will run\nwhatever you specify. Your job is to judge how far the model should be\ntrusted this month, given the diagnostics below.\n\n### Regime filter\n- Label this month: **bear**\n- P(bull) now: 0.01\n- P(bull) last 6 months (oldest first): 0.43, 0.00, 0.04, 0.27, 0.08, 0.01\n- Label changes in that window: 0\n\n### Conditional moments the optimiser would use (Eqs. 15-16)\n- If bull: mean +0.884%/mo, sd 4.07%/mo\n- If bear: mean -1.010%/mo, sd 5.34%/mo\n- Separation between the two states: 1.895 percentage points of monthly mean\n\n### Estimation health (CAPM, point-in-time)\n- Months of history used: 49\n- Mean R-squared across the eight stocks: 0.26\n- Beta range: 0.47 to 2.08\n- Largest beta move since last month: AMZN -0.29\n\n### What the optimiser wants before any cap\n- Largest single position: XOM at 21%\n- Gross exposure: 39%\n- Names above 20%: 1\n\n### How this model's recent decisions turned out\n- Last 12 months: mean -0.38%/mo, 4 of 12 positive\n- Most recent month: -0.35%\n\n### Decide\nSet `gamma` (higher is more risk averse), `regime_treatment`\n(`hard_label` follows the filter, `probability_blend` weights both\nstates by P(bull)), and `max_position_pct` (a fraction; 1.00 is no cap).\nReply with the JSON object only.",
+  "raw_text": "{\"gamma\":9,\"regime_treatment\":\"hard_label\",\"max_position_pct\":0.20,\"rationale\":\"The bear regime is highly confident (P(bull)=0.01) and stable with zero label changes, so hard_label is appropriate. However, poor CAPM fit (R\u00b2=0.26), a large beta move in AMZN, weak recent performance (only 4/12 positive months), and the optimiser wanting 21% in a single name in a bear market all justify raising risk aversion and capping the largest position at 20% to limit concentration risk.\"}",
+  "raw_parsed": {
+    "gamma": 9,
+    "regime_treatment": "hard_label",
+    "max_position_pct": 0.2,
+    "rationale": "The bear regime is highly confident (P(bull)=0.01) and stable with zero label changes, so hard_label is appropriate. However, poor CAPM fit (R\u00b2=0.26), a large beta move in AMZN, weak recent performance (only 4/12 positive months), and the optimiser wanting 21% in a single name in a bear market all justify raising risk aversion and capping the largest position at 20% to limit concentration risk."
+  },
+  "accepted": true,
+  "reject_reason": "",
+  "posture": {
+    "gamma": 9.0,
+    "regime_treatment": "hard_label",
+    "max_position_pct": 0.2,
+    "rationale": "The bear regime is highly confident (P(bull)=0.01) and stable with zero label changes, so hard_label is appropriate. However, poor CAPM fit (R\u00b2=0.26), a large beta move in AMZN, weak recent performance (only 4/12 positive months), and the optimiser wanting 21% in a single name in a bear market all justify raising risk aversion and capping the largest position at 20% to limit concentration risk."
+  },
+  "usage": {
+    "input_tokens": 1043,
+    "output_tokens": 136,
+    "latency_ms": 4289.6
+  }
+}

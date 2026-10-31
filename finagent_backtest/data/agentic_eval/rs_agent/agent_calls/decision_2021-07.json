@@ -1,0 +1,25 @@
+{
+  "date": "2021-07",
+  "model": "claude-sonnet-4-6",
+  "briefing": "## RS allocation cycle 2021-07\n\nYou are setting the decision parameters for a regime-switching optimal\nportfolio (Markose & Yang). The optimiser itself is fixed and will run\nwhatever you specify. Your job is to judge how far the model should be\ntrusted this month, given the diagnostics below.\n\n### Regime filter\n- Label this month: **bull**\n- P(bull) now: 0.97\n- P(bull) last 6 months (oldest first): 0.93, 0.95, 0.96, 0.97, 0.97, 0.97\n- Label changes in that window: 0\n\n### Conditional moments the optimiser would use (Eqs. 15-16)\n- If bull: mean +0.884%/mo, sd 4.07%/mo\n- If bear: mean -1.010%/mo, sd 5.34%/mo\n- Separation between the two states: 1.895 percentage points of monthly mean\n\n### Estimation health (CAPM, point-in-time)\n- Months of history used: 198\n- Mean R-squared across the eight stocks: 0.33\n- Beta range: 0.61 to 1.55\n- Largest beta move since last month: NVDA +0.01\n\n### What the optimiser wants before any cap\n- Largest single position: AAPL at 34%\n- Gross exposure: 100%\n- Names above 20%: 2\n\n### How this model's recent decisions turned out\n- Last 12 months: mean +3.42%/mo, 8 of 12 positive\n- Most recent month: +10.06%\n\n### Decide\nSet `gamma` (higher is more risk averse), `regime_treatment`\n(`hard_label` follows the filter, `probability_blend` weights both\nstates by P(bull)), and `max_position_pct` (a fraction; 1.00 is no cap).\nReply with the JSON object only.",
+  "raw_text": "{\"gamma\":6,\"regime_treatment\":\"hard_label\",\"max_position_pct\":0.30,\"rationale\":\"The filter is highly stable (P(bull)=0.97 with zero label changes and steady trend), and CAPM fit is adequate with a long history, so classical gamma and hard_label are appropriate. However, two names exceed 20% pre-cap and AAPL alone wants 34%, so a 30% cap reduces idiosyncratic concentration without overly distorting the optimizer's signal.\"}",
+  "raw_parsed": {
+    "gamma": 6,
+    "regime_treatment": "hard_label",
+    "max_position_pct": 0.3,
+    "rationale": "The filter is highly stable (P(bull)=0.97 with zero label changes and steady trend), and CAPM fit is adequate with a long history, so classical gamma and hard_label are appropriate. However, two names exceed 20% pre-cap and AAPL alone wants 34%, so a 30% cap reduces idiosyncratic concentration without overly distorting the optimizer's signal."
+  },
+  "accepted": true,
+  "reject_reason": "",
+  "posture": {
+    "gamma": 6.0,
+    "regime_treatment": "hard_label",
+    "max_position_pct": 0.3,
+    "rationale": "The filter is highly stable (P(bull)=0.97 with zero label changes and steady trend), and CAPM fit is adequate with a long history, so classical gamma and hard_label are appropriate. However, two names exceed 20% pre-cap and AAPL alone wants 34%, so a 30% cap reduces idiosyncratic concentration without overly distorting the optimizer's signal."
+  },
+  "usage": {
+    "input_tokens": 1044,
+    "output_tokens": 120,
+    "latency_ms": 3994.8
+  }
+}

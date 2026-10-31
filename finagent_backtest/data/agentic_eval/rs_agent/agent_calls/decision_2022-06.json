@@ -1,0 +1,25 @@
+{
+  "date": "2022-06",
+  "model": "claude-sonnet-4-6",
+  "briefing": "## RS allocation cycle 2022-06\n\nYou are setting the decision parameters for a regime-switching optimal\nportfolio (Markose & Yang). The optimiser itself is fixed and will run\nwhatever you specify. Your job is to judge how far the model should be\ntrusted this month, given the diagnostics below.\n\n### Regime filter\n- Label this month: **bear**\n- P(bull) now: 0.34\n- P(bull) last 6 months (oldest first): 0.90, 0.88, 0.93, 0.60, 0.75, 0.34\n- Label changes in that window: 1\n\n### Conditional moments the optimiser would use (Eqs. 15-16)\n- If bull: mean +0.884%/mo, sd 4.07%/mo\n- If bear: mean -1.010%/mo, sd 5.34%/mo\n- Separation between the two states: 1.895 percentage points of monthly mean\n\n### Estimation health (CAPM, point-in-time)\n- Months of history used: 209\n- Mean R-squared across the eight stocks: 0.33\n- Beta range: 0.60 to 1.61\n- Largest beta move since last month: XOM -0.00\n\n### What the optimiser wants before any cap\n- Largest single position: AAPL at 10%\n- Gross exposure: 13%\n- Names above 20%: 0\n\n### How this model's recent decisions turned out\n- Last 12 months: mean +1.63%/mo, 7 of 12 positive\n- Most recent month: -1.70%\n\n### Decide\nSet `gamma` (higher is more risk averse), `regime_treatment`\n(`hard_label` follows the filter, `probability_blend` weights both\nstates by P(bull)), and `max_position_pct` (a fraction; 1.00 is no cap).\nReply with the JSON object only.",
+  "raw_text": "{\"gamma\":7,\"regime_treatment\":\"probability_blend\",\"max_position_pct\":1.0,\"rationale\":\"The filter shifted sharply from bull to bear over the last six months with P(bull) dropping from 0.93 to 0.34, signaling meaningful uncertainty about the regime; probability_blend better reflects this transitional state. Gross exposure is low (13%) and no single position exceeds 20%, so no cap is needed, but a modestly elevated gamma of 7 reflects the recent negative month and the bear-state's higher volatility.\"}",
+  "raw_parsed": {
+    "gamma": 7,
+    "regime_treatment": "probability_blend",
+    "max_position_pct": 1.0,
+    "rationale": "The filter shifted sharply from bull to bear over the last six months with P(bull) dropping from 0.93 to 0.34, signaling meaningful uncertainty about the regime; probability_blend better reflects this transitional state. Gross exposure is low (13%) and no single position exceeds 20%, so no cap is needed, but a modestly elevated gamma of 7 reflects the recent negative month and the bear-state's higher volatility."
+  },
+  "accepted": true,
+  "reject_reason": "",
+  "posture": {
+    "gamma": 7.0,
+    "regime_treatment": "probability_blend",
+    "max_position_pct": 1.0,
+    "rationale": "The filter shifted sharply from bull to bear over the last six months with P(bull) dropping from 0.93 to 0.34, signaling meaningful uncertainty about the regime; probability_blend better reflects this transitional state. Gross exposure is low (13%) and no single position exceeds 20%, so no cap is needed, but a modestly elevated gamma of 7 reflects the recent negative month and the bear-state's hig"
+  },
+  "usage": {
+    "input_tokens": 1043,
+    "output_tokens": 129,
+    "latency_ms": 4374.8
+  }
+}

@@ -1,0 +1,710 @@
+<title>Hamilton Beats the Panel</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+
+<style>
+:root{
+  --ground:#F5F7F9; --surface:#FFFFFF; --raised:#EDF1F5;
+  --ink:#0E141B; --ink-2:#3D4A58; --muted:#697786; --rule:#DCE3EA;
+  --accent:#0E80B2; --accent-soft:#E4F1F7;
+  --quiet:#0E80B2; --volatile:#BE7B00; --stress:#A83232;
+  --good:#1F7A4D; --bad:#A83232;
+  --shadow:0 1px 2px rgba(14,20,27,.05),0 8px 24px rgba(14,20,27,.06);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --ground:#0D1117; --surface:#151B23; --raised:#1C242E;
+    --ink:#E7ECF2; --ink-2:#B6C1CD; --muted:#8492A2; --rule:#28323E;
+    --accent:#3FA5D0; --accent-soft:#132A36;
+    --quiet:#2492BC; --volatile:#A89628; --stress:#CB5563;
+    --good:#4FB585; --bad:#CB5563;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.34);
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#0D1117; --surface:#151B23; --raised:#1C242E;
+  --ink:#E7ECF2; --ink-2:#B6C1CD; --muted:#8492A2; --rule:#28323E;
+  --accent:#3FA5D0; --accent-soft:#132A36;
+  --quiet:#2492BC; --volatile:#A89628; --stress:#CB5563;
+  --good:#4FB585; --bad:#CB5563;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.34);
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--ground); color:var(--ink);
+  font-family:"IBM Plex Sans",ui-sans-serif,system-ui,sans-serif;
+  font-size:16px; line-height:1.65;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1120px;margin:0 auto;padding:0 28px 96px}
+.prose{max-width:68ch}
+h1,h2,h3{font-family:Fraunces,Georgia,serif;text-wrap:balance;margin:0}
+h1{font-size:clamp(2.4rem,5.2vw,3.9rem);font-weight:600;line-height:1.05;letter-spacing:-.02em}
+h2{font-size:clamp(1.5rem,2.6vw,2rem);font-weight:600;line-height:1.15;letter-spacing:-.01em}
+h3{font-size:1.06rem;font-weight:600;line-height:1.3}
+p{margin:0 0 1.05em}
+a{color:var(--accent)}
+strong{font-weight:600}
+.mono{font-family:"IBM Plex Mono",ui-monospace,monospace;font-variant-numeric:tabular-nums}
+
+/* ---------------------------------------------------------------- masthead */
+header.top{border-bottom:1px solid var(--rule);background:var(--surface)}
+.top-in{max-width:1120px;margin:0 auto;padding:56px 28px 44px}
+.eyebrow{
+  font-family:"IBM Plex Mono",monospace;font-size:.72rem;font-weight:500;
+  letter-spacing:.13em;text-transform:uppercase;color:var(--muted);
+  display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:22px
+}
+.eyebrow .dot{width:4px;height:4px;border-radius:50%;background:var(--muted);opacity:.55}
+.lede{font-size:1.16rem;color:var(--ink-2);max-width:66ch;margin-top:22px}
+
+.verdict{
+  display:flex;gap:14px;align-items:flex-start;margin-top:32px;padding:20px 22px;
+  background:var(--accent-soft);border-left:3px solid var(--accent);border-radius:0 8px 8px 0;
+  max-width:74ch;
+}
+.verdict .k{
+  font-family:"IBM Plex Mono",monospace;font-size:.7rem;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--accent);font-weight:600;white-space:nowrap;padding-top:3px
+}
+.verdict p{margin:0;font-size:1.02rem;color:var(--ink)}
+
+/* ------------------------------------------------------------------ layout */
+section{padding-top:72px}
+.sec-head{display:flex;gap:16px;align-items:baseline;margin-bottom:8px}
+.sec-num{
+  font-family:"IBM Plex Mono",monospace;font-size:.8rem;font-weight:600;
+  color:var(--accent);letter-spacing:.06em;padding-top:4px
+}
+.sub{color:var(--muted);font-size:.95rem;margin:6px 0 26px;max-width:70ch}
+
+.card{
+  background:var(--surface);border:1px solid var(--rule);border-radius:12px;
+  padding:24px;box-shadow:var(--shadow);margin:26px 0
+}
+.scroll{overflow-x:auto}
+
+/* ------------------------------------------------------------------ charts */
+.legend{display:flex;gap:20px;flex-wrap:wrap;align-items:center;margin-bottom:18px}
+.lg{display:flex;gap:8px;align-items:center;font-size:.85rem;color:var(--ink-2)}
+.sw{width:22px;height:11px;border-radius:3px;flex:none}
+canvas{display:block;width:100%;touch-action:none}
+.chart-host{position:relative}
+#tip{
+  position:absolute;pointer-events:none;opacity:0;transition:opacity .1s;
+  background:var(--surface);border:1px solid var(--rule);border-radius:8px;
+  box-shadow:var(--shadow);padding:10px 12px;font-size:.8rem;z-index:5;min-width:190px
+}
+#tip .t-d{font-family:"IBM Plex Mono",monospace;font-weight:600;margin-bottom:7px;font-size:.82rem}
+#tip .t-r{display:flex;justify-content:space-between;gap:16px;padding:2px 0}
+#tip .t-r span:first-child{color:var(--muted)}
+#tip .t-r span:last-child{font-family:"IBM Plex Mono",monospace}
+
+/* ------------------------------------------------------------------ tables */
+table{border-collapse:collapse;width:100%;font-size:.87rem}
+th,td{text-align:right;padding:9px 12px;border-bottom:1px solid var(--rule);white-space:nowrap}
+th:first-child,td:first-child{text-align:left}
+thead th{
+  font-family:"IBM Plex Mono",monospace;font-size:.7rem;letter-spacing:.07em;
+  text-transform:uppercase;color:var(--muted);font-weight:600;
+  border-bottom:1px solid var(--ink-2)
+}
+tbody td:not(:first-child){font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums}
+tbody tr:hover{background:var(--raised)}
+td.win{color:var(--good);font-weight:600}
+td.lose{color:var(--bad)}
+.rowlab{color:var(--ink-2)}
+caption{caption-side:top;text-align:left;color:var(--muted);font-size:.8rem;padding-bottom:12px}
+
+.pill{
+  display:inline-block;font-family:"IBM Plex Mono",monospace;font-size:.68rem;
+  letter-spacing:.06em;text-transform:uppercase;padding:3px 8px;border-radius:20px;
+  background:var(--raised);color:var(--ink-2);border:1px solid var(--rule)
+}
+
+/* -------------------------------------------------------------------- grid */
+.grid{display:grid;gap:18px;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));margin:26px 0}
+.stat{background:var(--surface);border:1px solid var(--rule);border-radius:12px;padding:20px}
+.stat .n{font-family:"IBM Plex Mono",monospace;font-size:1.85rem;font-weight:600;line-height:1;letter-spacing:-.02em}
+.stat .l{font-size:.78rem;color:var(--muted);margin-top:9px;line-height:1.45}
+.stat .c{font-size:.74rem;color:var(--ink-2);margin-top:7px}
+
+ul.notes{padding-left:0;list-style:none;margin:0}
+ul.notes li{
+  padding:13px 0 13px 20px;border-bottom:1px solid var(--rule);
+  position:relative;color:var(--ink-2);font-size:.93rem
+}
+ul.notes li:last-child{border-bottom:0}
+ul.notes li::before{content:"";position:absolute;left:0;top:21px;width:7px;height:2px;background:var(--accent)}
+ul.notes b{color:var(--ink);font-weight:600}
+
+.veto{border:1px solid var(--rule);border-radius:10px;padding:16px 18px;margin-bottom:14px;background:var(--surface)}
+.veto .vh{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:9px}
+.veto .vd{font-family:"IBM Plex Mono",monospace;font-weight:600;font-size:.88rem}
+.veto .mv{font-family:"IBM Plex Mono",monospace;font-size:.8rem;color:var(--ink-2)}
+.veto .ob{font-size:.88rem;color:var(--ink-2);margin:0}
+.arrow{color:var(--muted);padding:0 2px}
+
+footer{margin-top:80px;padding-top:26px;border-top:1px solid var(--rule);color:var(--muted);font-size:.82rem}
+
+@media (max-width:640px){
+  .wrap,.top-in{padding-left:18px;padding-right:18px}
+  .verdict{flex-direction:column;gap:8px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<header class="top">
+  <div class="top-in">
+    <div class="eyebrow">
+      <span>S&amp;P 500</span><span class="dot"></span>
+      <span id="ey-window">2005–2023</span><span class="dot"></span>
+      <span id="ey-n">— scored days</span><span class="dot"></span>
+      <span>Filtered probabilities only</span>
+    </div>
+    <h1>A 1989 model beats the agent panel</h1>
+    <p class="lede">
+      Three detectors, one price path, one ground truth. Hamilton's two-state
+      Markov switching model — the benchmark, not the contender — wins on every
+      scope and every scoring rule that matters. The LLM panel does improve on
+      the detector it wraps, significantly. It just wraps the wrong detector.
+    </p>
+    <div class="verdict">
+      <div class="k">Verdict</div>
+      <p id="verdict-text">—</p>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+
+<!-- ============================================================= 1 ribbon -->
+<section>
+  <div class="sec-head"><div class="sec-num">01</div><h2>What each detector saw</h2></div>
+  <p class="sub">
+    Every week from 2005 to 2023, coloured by the regime each arm called that day.
+    The top band is the ground truth — forward 20-day realized-volatility terciles,
+    computed from price alone so it favours no arm. Read down a column to compare.
+  </p>
+
+  <div class="card">
+    <div class="legend">
+      <div class="lg"><span class="sw" style="background:var(--quiet)"></span>Bull, quiet</div>
+      <div class="lg"><span class="sw" style="background:var(--volatile)"></span>Bull, volatile</div>
+      <div class="lg"><span class="sw" style="background:var(--stress)"></span>Bear, stressed</div>
+      <div class="lg" style="margin-left:auto"><span class="pill">hover to inspect</span></div>
+    </div>
+    <div class="chart-host">
+      <canvas id="ribbon" height="440"></canvas>
+      <div id="tip"></div>
+    </div>
+  </div>
+
+  <ul class="notes">
+    <li><b>Hamilton flips often</b> — 181 episodes, median 5 days, 2.95 false alarms a year. It is jumpy, and it is right more often than the alternatives.</li>
+    <li><b>The HMM is stable and stale</b> — 95 episodes, median 21 days. Fewer false alarms, but it arrives late and holds on too long.</li>
+    <li><b>The agent track is nearly the HMM track</b> — 4 labels changed out of 582 the panel was allowed to touch. Agreement between them is <span class="mono">κ = 0.999</span>.</li>
+  </ul>
+</section>
+
+<!-- ========================================================== 2 scoreboard -->
+<section>
+  <div class="sec-head"><div class="sec-num">02</div><h2>The scoreboard</h2></div>
+  <p class="sub">
+    Brier score, lower is better. Skill scores are versus two baselines every arm
+    must clear: persistence (the last label actually knowable at decision time)
+    and climatology (the expanding base rate). Positive means it beat that
+    baseline. Green marks the winner in each row.
+  </p>
+
+  <div class="card scroll">
+    <table id="tbl-full"><caption>Full scope — every scored day</caption></table>
+  </div>
+  <div class="card scroll">
+    <table id="tbl-gated"><caption>Gated scope — only days the panel was allowed to act. Off-gate, Arm C is Arm B by construction.</caption></table>
+  </div>
+  <div class="card scroll">
+    <table id="tbl-news"><caption>News-live scope — gated days that actually carry news. The only scope where C−B isolates sentiment.</caption></table>
+  </div>
+
+  <div class="card">
+    <h3 style="margin-bottom:14px">Paired tests</h3>
+    <p class="sub" style="margin-bottom:18px">
+      Diebold–Mariano on Brier loss with Newey–West standard errors, blocked at
+      the 20-day forward window. Daily observations overlap by 19 of 20 days, so
+      n = 4,781 is roughly n_eff = 239 independent blocks — the tests are run on
+      that basis, not on the raw count.
+    </p>
+    <div class="scroll"><table id="tbl-tests"></table></div>
+  </div>
+</section>
+
+<!-- ========================================================= 3 calibration -->
+<section>
+  <div class="sec-head"><div class="sec-num">03</div><h2>Why the panel helped, and what that was worth</h2></div>
+  <p class="sub">
+    The panel changed almost no labels, yet its Brier score is significantly
+    better than the detector's. That is not a contradiction — it is the whole
+    mechanism. The HMM was pathologically overconfident, and the critic took
+    that away.
+  </p>
+
+  <div class="grid" id="calib-stats"></div>
+
+  <div class="card">
+    <div class="legend">
+      <div class="lg"><span class="sw" style="background:var(--muted)"></span>Arm B — HMM alone</div>
+      <div class="lg"><span class="sw" style="background:var(--accent)"></span>Arm C — after the panel</div>
+    </div>
+    <div class="chart-host">
+      <canvas id="calib" height="300"></canvas>
+    </div>
+    <p class="sub" style="margin:16px 0 0">
+      Confidence on gated days. The HMM's spike against the right wall is the
+      problem: on 21.6% of these days it claimed above 99% certainty. Brier
+      punishes a confident error far harder than a hedged one.
+    </p>
+  </div>
+
+  <ul class="notes">
+    <li><b>Reliability improved, resolution did not.</b> On gated days reliability fell 0.3015 → 0.1340 while resolution stayed flat at 0.068. The panel did not know more. It stopped pretending to be certain.</li>
+    <li><b>The critic almost never got its way.</b> It moved to override 38 times; the unanimity gate blocked 34. Only 4 vetoes landed.</li>
+    <li><b>Zero failed calls</b> across 2,910 model calls, so no abstention was manufactured by an API error.</li>
+  </ul>
+</section>
+
+<!-- ================================================================ 4 news -->
+<section>
+  <div class="sec-head"><div class="sec-num">04</div><h2>The news layer added nothing</h2></div>
+  <p class="sub">
+    This was the study's central question, and the answer is clean. If sentiment
+    carried information, the panel's advantage would be larger on days that
+    actually have news. It is smaller.
+  </p>
+
+  <div class="grid" id="news-stats"></div>
+
+  <div class="card">
+    <h3 style="margin-bottom:6px">Headline tone does not track index stress</h3>
+    <p class="sub" style="margin-bottom:18px">
+      Mean FinBERT and Loughran–McDonald tone by episode. Only COVID shows the
+      expected signature. China 2015 is the most positive period in the sample —
+      more positive than any calm year.
+    </p>
+    <div class="scroll"><table id="tbl-sent"></table></div>
+    <p class="sub" style="margin:16px 0 0">
+      The cause is mechanical: these are single-stock headlines. Through the 2022
+      drawdown, NVDA coverage is GPU launches and analyst targets, not the
+      selloff. Only COVID was broad enough to dominate every company's news at once.
+    </p>
+  </div>
+</section>
+
+<!-- ============================================================ 5 leadtime -->
+<section>
+  <div class="sec-head"><div class="sec-num">05</div><h2>Who got there first</h2></div>
+  <p class="sub">
+    Days between each arm's first <em>bear, stressed</em> call and the hand-dated
+    onset of each episode. Positive is early, negative is late, blank means the
+    arm never reached it.
+  </p>
+  <div class="card scroll"><table id="tbl-lead"></table></div>
+  <ul class="notes">
+    <li><b>Hamilton reached 7 of 8 onsets</b> against 6 of 8 for the other two, and called the 2022 bear market 38 days ahead — an episode both other arms missed entirely.</li>
+    <li><b>The panel cost lead time at the GFC.</b> The HMM flagged it on 19 October 2007; the panel's veto pushed the agentic arm to 22 October. Three days later, in the wrong direction.</li>
+    <li><b>Nobody caught the dot-com peak.</b> It sits in the burn-in window, before scoring opens.</li>
+  </ul>
+</section>
+
+<!-- =============================================================== 6 vetos -->
+<section>
+  <div class="sec-head"><div class="sec-num">06</div><h2>Every veto, in full</h2></div>
+  <p class="sub">
+    Four labels changed across the whole study. A veto required all informative
+    specialists to agree against the detector <em>and</em> the critic to concur.
+    Two of the four moved away from <em>bear, stressed</em> immediately before
+    real stress.
+  </p>
+  <div id="vetoes"></div>
+</section>
+
+<!-- =========================================================== 7 limits -->
+<section>
+  <div class="sec-head"><div class="sec-num">07</div><h2>What this does not show</h2></div>
+  <p class="sub">Constraints that bound the claim, stated rather than buried.</p>
+  <ul class="notes">
+    <li><b>News breadth is seven names, and no bank.</b> FNSPID holds ten JPM articles in 23 GB, so the credit specialist works from FRED spreads with no news corroboration.</li>
+    <li><b>No ticker news before 2011.</b> 102 gated days in 2005–2010 had none, so the sentiment layer was dark across the entire GFC.</li>
+    <li><b>2008 never triggered the gate.</b> The HMM sat confidently in <em>bear, stressed</em> throughout, so nothing flipped and the panel was never convened. Arm C is identical to Arm B across the most important episode in the sample.</li>
+    <li><b>Three states was a taxonomy choice, not a fitted one.</b> BIC falls monotonically from k=2 to k=6 and never turns, so the data does not select three.</li>
+    <li><b>The drawdown robustness target favours Arm B</b>, which has drawdown as an input feature. Hamilton wins on it anyway, 0.785 to 0.517.</li>
+  </ul>
+</section>
+
+<footer>
+  <p class="mono" id="foot">—</p>
+  <p>
+    Filtered probabilities throughout; smoothed probabilities are forbidden in
+    code, since they condition on the future. Expanding-window standardization,
+    in-sample-only state mapping, and a persistence baseline lagged by the full
+    forward window so it stays feasible at decision time.
+  </p>
+</footer>
+</div>
+
+<script type="application/json" id="payload">__DATA__</script>
+<script>
+const D = JSON.parse(document.getElementById("payload").textContent);
+const CSS = k => getComputedStyle(document.documentElement).getPropertyValue(k).trim();
+const STATE_VARS = ["--quiet","--volatile","--stress"];
+const STATE_NAME = ["Bull, quiet","Bull, volatile","Bear, stressed"];
+const ARM_LABEL = {A_hamilton:"Hamilton (1989)", B_hmm:"3-state HMM", C_agentic:"Agentic panel"};
+const PRETTY = {bull_quiet:"Bull, quiet", bull_volatile:"Bull, volatile",
+                bear_stress:"Bear, stressed"};
+const EP_NAME = {dotcom:"Dot-com peak", gfc:"Global financial crisis",
+                 aug_2011:"August 2011 selloff", china_2015:"China devaluation 2015",
+                 volmageddon:"Volmageddon 2018", q4_2018:"Q4 2018",
+                 covid:"COVID crash", bear_2022:"2022 bear market"};
+const ps = s => PRETTY[s] || s;
+const fmt = (v,d=4) => (v===null||v===undefined||Number.isNaN(v)) ? "—"
+  : (typeof v === "number" ? v.toFixed(d) : String(v));
+
+/* ------------------------------------------------------------- masthead */
+document.getElementById("ey-window").textContent =
+  D.meta.score_start.slice(0,4) + "–" + D.meta.score_end.slice(0,4);
+document.getElementById("ey-n").textContent = D.meta.n_scored.toLocaleString() + " scored days";
+
+(function(){
+  const f = D.scopes || {};
+  const A = f.A_hamilton || {}, C = f.C_agentic || {};
+  const t = (D.tests || {}).A_hamilton_vs_C_agentic || {};
+  document.getElementById("verdict-text").innerHTML =
+    "Hamilton is the only arm that beats <em>both</em> baselines. Against the "
+    + "agentic panel its Brier score is better by "
+    + "<span class='mono'>" + Math.abs(t.brier_diff_ci ? t.brier_diff_ci.diff : 0).toFixed(4) + "</span>"
+    + " (DM <span class='mono'>" + fmt(t.dm_brier ? t.dm_brier.dm_stat : null,2) + "</span>, "
+    + "p <span class='mono'>&lt; 0.0001</span>). The panel, in turn, beats the "
+    + "HMM it wraps — but only by fixing its overconfidence, not by knowing more.";
+})();
+
+document.getElementById("foot").textContent =
+  D.meta.index + "  ·  panel " + D.meta.model
+  + "  ·  news tickers " + (D.meta.news_tickers||[]).join(" ")
+  + "  ·  " + (D.panel ? D.panel.n_calls.toLocaleString() + " model calls" : "");
+
+/* ---------------------------------------------------------- ribbon chart */
+const ribbon = document.getElementById("ribbon");
+const tip = document.getElementById("tip");
+const ROWS = [["target","Ground truth"],["A_hamilton","Hamilton (1989)"],
+              ["B_hmm","3-state HMM"],["C_agentic","Agentic panel"]];
+let geo = null;
+
+function drawRibbon(){
+  const dpr = window.devicePixelRatio || 1;
+  const W = ribbon.clientWidth, H = 440;
+  ribbon.width = W*dpr; ribbon.height = H*dpr;
+  const g = ribbon.getContext("2d");
+  g.setTransform(dpr,0,0,dpr,0,0);
+  g.clearRect(0,0,W,H);
+
+  const padL = 118, padR = 14, padT = 8, priceH = 128, gap = 26, bandH = 44, bandGap = 10;
+  const plotW = W - padL - padR;
+  const n = D.dates.length;
+  const colors = STATE_VARS.map(v => CSS(v));
+  const ink = CSS("--ink"), muted = CSS("--muted"), rule = CSS("--rule"), ink2 = CSS("--ink-2");
+
+  /* price line */
+  const px = D.close.filter(v => v !== null);
+  const lo = Math.min(...px), hi = Math.max(...px);
+  g.strokeStyle = rule; g.lineWidth = 1;
+  g.beginPath(); g.moveTo(padL, padT+priceH); g.lineTo(padL+plotW, padT+priceH); g.stroke();
+
+  g.beginPath();
+  D.close.forEach((v,i) => {
+    if(v===null) return;
+    const x = padL + (i/(n-1))*plotW;
+    const y = padT + priceH - ((v-lo)/(hi-lo))*(priceH-12);
+    i===0 ? g.moveTo(x,y) : g.lineTo(x,y);
+  });
+  g.strokeStyle = ink2; g.lineWidth = 1.5; g.lineJoin = "round"; g.stroke();
+
+  g.fillStyle = muted;
+  g.font = '500 10px "IBM Plex Mono", monospace';
+  g.textAlign = "right";
+  g.fillText("S&P 500", padL-12, padT+12);
+  g.fillText(Math.round(hi).toLocaleString(), padL-12, padT+26);
+  g.fillText(Math.round(lo).toLocaleString(), padL-12, padT+priceH-2);
+
+  /* bands */
+  const bw = plotW/n;
+  ROWS.forEach((r,ri) => {
+    const key = r[0];
+    const arr = key==="target" ? D.target : D.tracks[key];
+    const y = padT + priceH + gap + ri*(bandH+bandGap);
+    if(!arr) return;
+    for(let i=0;i<n;i++){
+      const v = arr[i];
+      if(v===null||v===undefined) continue;
+      g.fillStyle = colors[v];
+      g.fillRect(padL + i*bw, y, Math.ceil(bw)+0.5, bandH);
+    }
+    g.fillStyle = key==="target" ? ink : ink2;
+    g.font = key==="target"
+      ? '600 11.5px "IBM Plex Sans", sans-serif'
+      : '400 11.5px "IBM Plex Sans", sans-serif';
+    g.textAlign = "right";
+    g.fillText(r[1], padL-12, y + bandH/2 + 4);
+  });
+
+  /* year ticks */
+  const yTop = padT + priceH + gap + ROWS.length*(bandH+bandGap);
+  g.strokeStyle = rule; g.fillStyle = muted;
+  g.font = '400 10px "IBM Plex Mono", monospace';
+  g.textAlign = "center";
+  let last = "";
+  D.dates.forEach((d,i) => {
+    const yr = d.slice(0,4);
+    if(yr===last || (+yr)%2) { last = yr; return; }
+    last = yr;
+    const x = padL + (i/(n-1))*plotW;
+    g.beginPath(); g.moveTo(x,yTop); g.lineTo(x,yTop+5); g.stroke();
+    g.fillText(yr, x, yTop+18);
+  });
+
+  geo = {padL,plotW,n,bw,padT,priceH,gap,bandH,bandGap};
+}
+
+function moveTip(ev){
+  if(!geo) return;
+  const rect = ribbon.getBoundingClientRect();
+  const x = ev.clientX - rect.left;
+  const i = Math.round(((x - geo.padL)/geo.plotW)*(geo.n-1));
+  if(i < 0 || i >= geo.n){ tip.style.opacity = 0; return; }
+  let html = '<div class="t-d">' + D.dates[i] + '</div>';
+  const rows = [["Ground truth", D.target[i]]].concat(
+    Object.keys(D.tracks).map(k => [ARM_LABEL[k]||k, D.tracks[k][i]]));
+  rows.forEach(r => {
+    const v = r[1];
+    const c = (v===null||v===undefined) ? "var(--muted)" : CSS(STATE_VARS[v]);
+    html += '<div class="t-r"><span>'+r[0]+'</span><span style="color:'+c+'">'
+         + ((v===null||v===undefined) ? "—" : STATE_NAME[v]) + '</span></div>';
+  });
+  if(D.close[i]!==null)
+    html += '<div class="t-r"><span>S&amp;P 500</span><span>'+D.close[i].toLocaleString()+'</span></div>';
+  tip.innerHTML = html;
+  tip.style.opacity = 1;
+  const tw = tip.offsetWidth;
+  tip.style.left = Math.min(Math.max(x-tw/2, 0), ribbon.clientWidth-tw) + "px";
+  tip.style.top = "6px";
+}
+ribbon.addEventListener("pointermove", moveTip);
+ribbon.addEventListener("pointerleave", () => tip.style.opacity = 0);
+
+/* ----------------------------------------------------------- score tables */
+const ROWDEF = [
+  ["brier","Brier score",4,"low"],
+  ["bss_vs_persistence","Skill vs persistence",4,"high"],
+  ["bss_vs_climatology","Skill vs climatology",4,"high"],
+  ["accuracy","Accuracy",4,"high"],
+  ["kappa_vs_target","Cohen's κ",4,"high"],
+  ["reliability","Reliability (lower better)",4,"low"],
+  ["resolution","Resolution (higher better)",4,"high"],
+  ["n_episodes","Episodes",0,null],
+  ["false_alarms_per_year","False alarms / yr",2,null],
+];
+const COLS = ["A_hamilton","B_hmm","C_agentic","Z_persistence","Z_climatology"];
+const COLNAME = {A_hamilton:"Hamilton",B_hmm:"HMM",C_agentic:"Agentic",
+                 Z_persistence:"Persistence",Z_climatology:"Climatology"};
+
+function scoreTable(el, data){
+  if(!data || !Object.keys(data).length){ el.innerHTML = ""; return; }
+  const cols = COLS.filter(c => data[c]);
+  let h = "<thead><tr><th>Metric</th>";
+  cols.forEach(c => h += "<th>"+COLNAME[c]+"</th>");
+  h += "</tr></thead><tbody>";
+  const nrow = cols.map(c => data[c].n);
+  h += '<tr><td class="rowlab">n</td>'
+     + nrow.map(v => "<td>"+(v?Math.round(v).toLocaleString():"—")+"</td>").join("") + "</tr>";
+  ROWDEF.forEach(rd => {
+    const [k,lab,dp,dir] = rd;
+    const vals = cols.map(c => data[c][k]);
+    let best = null;
+    if(dir){
+      const arms = vals.slice(0,3).filter(v => typeof v === "number");
+      if(arms.length) best = dir==="high" ? Math.max(...arms) : Math.min(...arms);
+    }
+    h += '<tr><td class="rowlab">'+lab+"</td>";
+    vals.forEach(v => {
+      const isBest = dir && typeof v === "number" && v === best;
+      h += "<td"+(isBest?' class="win"':"")+">"+(typeof v==="number"?v.toFixed(dp):"—")+"</td>";
+    });
+    h += "</tr>";
+  });
+  el.innerHTML = h + "</tbody>";
+}
+scoreTable(document.getElementById("tbl-full"),  D.scopes);
+scoreTable(document.getElementById("tbl-gated"), D.scopes_gated);
+scoreTable(document.getElementById("tbl-news"),  D.scopes_news);
+
+(function(){
+  const t = D.tests || {};
+  const keys = Object.keys(t);
+  if(!keys.length) return;
+  let h = "<thead><tr><th>Comparison</th><th>DM stat</th><th>p</th>"
+        + "<th>Mean Brier diff</th><th>95% CI</th><th>κ between arms</th></tr></thead><tbody>";
+  keys.forEach(k => {
+    const v = t[k], dm = v.dm_brier||{}, ci = v.brier_diff_ci||{};
+    const pretty = k.split("_vs_").map(s => ARM_LABEL[s]||s).join("  vs  ");
+    h += "<tr><td class='rowlab'>"+pretty+"</td>"
+      + "<td>"+fmt(dm.dm_stat,2)+"</td>"
+      + "<td>"+(dm.p_value<0.0001?"&lt;0.0001":fmt(dm.p_value,4))+"</td>"
+      + "<td>"+(ci.diff>0?"+":"")+fmt(ci.diff,4)+"</td>"
+      + "<td>["+fmt(ci.ci_low,4)+", "+fmt(ci.ci_high,4)+"]</td>"
+      + "<td>"+fmt(v.kappa_between_arms,3)+"</td></tr>";
+  });
+  document.getElementById("tbl-tests").innerHTML = h + "</tbody>";
+})();
+
+/* ----------------------------------------------------------- calibration */
+(function(){
+  const cal = D.calibration || {};
+  const B = cal.B_hmm, C = cal.C_agentic;
+  if(!B || !C) return;
+
+  document.getElementById("calib-stats").innerHTML = [
+    ['<span class="mono">'+(B.above_99*100).toFixed(1)+"% → "+(C.above_99*100).toFixed(1)+"%",
+     "Gated days claiming above 99% confidence", "The saturation is gone entirely."],
+    ['<span class="mono">'+B.mean.toFixed(3)+" → "+C.mean.toFixed(3),
+     "Mean confidence on gated days", "A 20.2% reduction."],
+    ['<span class="mono">4 / 582',
+     "Labels the panel actually changed", "κ between the two arms is 0.999."],
+    ['<span class="mono">34 / 38',
+     "Attempted overrides the unanimity gate blocked", "The gate does real work."],
+  ].map(s => '<div class="stat"><div class="n">'+s[0]+'</div><div class="l">'+s[1]
+           + '</div><div class="c">'+s[2]+"</div></div>").join("");
+
+  const cv = document.getElementById("calib");
+  function draw(){
+    const dpr = window.devicePixelRatio||1, W = cv.clientWidth, H = 300;
+    cv.width = W*dpr; cv.height = H*dpr;
+    const g = cv.getContext("2d"); g.setTransform(dpr,0,0,dpr,0,0); g.clearRect(0,0,W,H);
+    const padL=48,padR=14,padT=12,padB=38, pw=W-padL-padR, ph=H-padT-padB;
+    const mx = Math.max(...B.hist, ...C.hist);
+    const bw = pw/B.hist.length;
+    const rule=CSS("--rule"), muted=CSS("--muted");
+
+    g.strokeStyle=rule; g.lineWidth=1;
+    for(let i=0;i<=4;i++){
+      const y=padT+ph-(i/4)*ph;
+      g.beginPath(); g.moveTo(padL,y); g.lineTo(padL+pw,y); g.stroke();
+      g.fillStyle=muted; g.font='400 10px "IBM Plex Mono", monospace'; g.textAlign="right";
+      g.fillText(Math.round(mx*i/4), padL-8, y+3);
+    }
+    [[B,CSS("--muted"),0],[C,CSS("--accent"),1]].forEach(s=>{
+      const [d,col,off]=s;
+      g.fillStyle=col; g.globalAlpha=off?0.95:0.55;
+      d.hist.forEach((v,i)=>{
+        if(!v) return;
+        const h=(v/mx)*ph, x=padL+i*bw+(off?bw*0.46:bw*0.08), w=bw*0.46;
+        g.beginPath();
+        if(g.roundRect) g.roundRect(x,padT+ph-h,w,h,[3,3,0,0]); else g.rect(x,padT+ph-h,w,h);
+        g.fill();
+      });
+      g.globalAlpha=1;
+    });
+    g.fillStyle=muted; g.font='400 10px "IBM Plex Mono", monospace'; g.textAlign="center";
+    [0,0.25,0.5,0.75,1].forEach(f=>{
+      g.fillText(f.toFixed(2), padL+f*pw, padT+ph+18);
+    });
+    g.fillText("confidence", padL+pw/2, padT+ph+34);
+  }
+  draw();
+  window.addEventListener("resize", draw);
+  window.__calib = draw;
+})();
+
+/* ----------------------------------------------------------------- news */
+(function(){
+  const g = D.scopes_gated||{}, nl = D.scopes_news||{};
+  const gGain = (g.B_hmm && g.C_agentic) ? g.C_agentic.bss_vs_persistence - g.B_hmm.bss_vs_persistence : null;
+  const nGain = (nl.B_hmm && nl.C_agentic) ? nl.C_agentic.bss_vs_persistence - nl.B_hmm.bss_vs_persistence : null;
+  document.getElementById("news-stats").innerHTML = [
+    ['<span class="mono">+'+(gGain||0).toFixed(4), "Panel's skill gain on all gated days", "582 days."],
+    ['<span class="mono">+'+(nGain||0).toFixed(4), "Panel's skill gain where news exists", "395 days — and it is smaller."],
+    ['<span class="mono">395 / 582', "Gated days carrying any news", "None at all before 2011."],
+    ['<span class="mono">54,211', "Headlines scored by FinBERT and LM", "Across seven tickers."],
+  ].map(s=>'<div class="stat"><div class="n">'+s[0]+'</div><div class="l">'+s[1]
+        +'</div><div class="c">'+s[2]+"</div></div>").join("");
+
+  const SENT = [
+    ["2011 selloff","STRESS",0.0802,0.0281,3.1],
+    ["China 2015","STRESS",0.1393,0.0335,2.6],
+    ["Volmageddon","STRESS",-0.0038,-0.1460,5.6],
+    ["Q4 2018","STRESS",0.0285,-0.0929,5.8],
+    ["COVID 2020","STRESS",-0.1057,-0.1170,26.1],
+    ["Bear 2022","STRESS",0.0130,0.0210,44.0],
+    ["Calm 2013","calm",0.0171,-0.0289,2.4],
+    ["Calm 2017","calm",0.0752,-0.0494,4.1],
+    ["Calm 2021","calm",0.0514,0.0142,13.3],
+  ];
+  let h = "<thead><tr><th>Episode</th><th>FinBERT tone</th><th>LM tone</th><th>Articles / day</th></tr></thead><tbody>";
+  SENT.forEach(r=>{
+    const stress = r[1]==="STRESS";
+    h += "<tr><td class='rowlab'>"+(stress?"<b>"+r[0]+"</b>":r[0])+"</td>"
+      + "<td class='"+(r[2]<0?"lose":"")+"'>"+(r[2]>0?"+":"")+r[2].toFixed(4)+"</td>"
+      + "<td class='"+(r[3]<0?"lose":"")+"'>"+(r[3]>0?"+":"")+r[3].toFixed(4)+"</td>"
+      + "<td>"+r[4].toFixed(1)+"</td></tr>";
+  });
+  document.getElementById("tbl-sent").innerHTML = h+"</tbody>";
+})();
+
+/* ------------------------------------------------------------- lead time */
+(function(){
+  const lead = D.lead||{};
+  const arms = Object.keys(lead);
+  if(!arms.length) return;
+  const eps = (lead[arms[0]]||[]).map(r=>r.episode);
+  let h = "<thead><tr><th>Episode</th><th>Onset</th>";
+  arms.forEach(a=>h+="<th>"+(ARM_LABEL[a]||a)+"</th>");
+  h += "</tr></thead><tbody>";
+  eps.forEach((e,i)=>{
+    const onset = (lead[arms[0]][i]||{}).onset || "";
+    h += "<tr><td class='rowlab'>"+(EP_NAME[e]||e)+"</td><td>"+String(onset).slice(0,10)+"</td>";
+    arms.forEach(a=>{
+      const v = (lead[a][i]||{}).lead_days;
+      if(v===null||v===undefined) h += "<td>—</td>";
+      else h += "<td class='"+(v>0?"win":"lose")+"'>"+(v>0?"+":"")+v+"</td>";
+    });
+    h += "</tr>";
+  });
+  document.getElementById("tbl-lead").innerHTML = h+"</tbody>";
+})();
+
+/* ---------------------------------------------------------------- vetoes */
+(function(){
+  const v = (D.panel||{}).vetoes||[];
+  const host = document.getElementById("vetoes");
+  if(!v.length){ host.innerHTML = "<p class='sub'>The panel never cleared the unanimity bar.</p>"; return; }
+  host.innerHTML = v.map(r=>{
+    const votes = Object.entries(r.votes||{})
+      .map(([k,s])=>k.replace(/_/g," ")+" → "+ps(s)).join("  ·  ");
+    return '<div class="veto"><div class="vh"><span class="vd">'+r.date+'</span>'
+      + '<span class="mono">'+ps(r.from)+'<span class="arrow"> → </span>'+ps(r.to)+"</span></div>"
+      + '<div class="mv" style="margin-bottom:9px">'+votes+"</div>"
+      + '<p class="ob">'+(r.objection||"")+"</p></div>";
+  }).join("");
+})();
+
+/* ---------------------------------------------------------------- resize */
+drawRibbon();
+let rt;
+window.addEventListener("resize", ()=>{ clearTimeout(rt); rt = setTimeout(drawRibbon, 120); });
+if(window.matchMedia){
+  const mq = window.matchMedia("(prefers-color-scheme: dark)");
+  const redraw = ()=>{ drawRibbon(); if(window.__calib) window.__calib(); };
+  mq.addEventListener ? mq.addEventListener("change", redraw) : mq.addListener(redraw);
+}
+document.fonts && document.fonts.ready.then(drawRibbon);
+</script>

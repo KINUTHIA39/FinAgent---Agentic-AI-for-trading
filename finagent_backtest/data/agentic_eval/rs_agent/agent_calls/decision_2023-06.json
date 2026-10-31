@@ -1,0 +1,25 @@
+{
+  "date": "2023-06",
+  "model": "claude-sonnet-4-6",
+  "briefing": "## RS allocation cycle 2023-06\n\nYou are setting the decision parameters for a regime-switching optimal\nportfolio (Markose & Yang). The optimiser itself is fixed and will run\nwhatever you specify. Your job is to judge how far the model should be\ntrusted this month, given the diagnostics below.\n\n### Regime filter\n- Label this month: **bull**\n- P(bull) now: 0.94\n- P(bull) last 6 months (oldest first): 0.54, 0.60, 0.78, 0.87, 0.92, 0.94\n- Label changes in that window: 0\n\n### Conditional moments the optimiser would use (Eqs. 15-16)\n- If bull: mean +0.884%/mo, sd 4.07%/mo\n- If bear: mean -1.010%/mo, sd 5.34%/mo\n- Separation between the two states: 1.895 percentage points of monthly mean\n\n### Estimation health (CAPM, point-in-time)\n- Months of history used: 221\n- Mean R-squared across the eight stocks: 0.34\n- Beta range: 0.56 to 1.69\n- Largest beta move since last month: NVDA -0.01\n\n### What the optimiser wants before any cap\n- Largest single position: AAPL at 36%\n- Gross exposure: 100%\n- Names above 20%: 1\n\n### How this model's recent decisions turned out\n- Last 12 months: mean +2.55%/mo, 8 of 12 positive\n- Most recent month: +13.47%\n\n### Decide\nSet `gamma` (higher is more risk averse), `regime_treatment`\n(`hard_label` follows the filter, `probability_blend` weights both\nstates by P(bull)), and `max_position_pct` (a fraction; 1.00 is no cap).\nReply with the JSON object only.",
+  "raw_text": "{\"gamma\":6,\"regime_treatment\":\"hard_label\",\"max_position_pct\":0.36,\"rationale\":\"The filter is stable and highly confident (P(bull)=0.94, no label changes, steadily rising), CAPM fit is modest but acceptable, and recent performance is strong. The only concern is the 36% AAPL concentration, so a cap at 0.36 is applied to prevent further single-name excess without otherwise tightening the model.\"}",
+  "raw_parsed": {
+    "gamma": 6,
+    "regime_treatment": "hard_label",
+    "max_position_pct": 0.36,
+    "rationale": "The filter is stable and highly confident (P(bull)=0.94, no label changes, steadily rising), CAPM fit is modest but acceptable, and recent performance is strong. The only concern is the 36% AAPL concentration, so a cap at 0.36 is applied to prevent further single-name excess without otherwise tightening the model."
+  },
+  "accepted": true,
+  "reject_reason": "",
+  "posture": {
+    "gamma": 6.0,
+    "regime_treatment": "hard_label",
+    "max_position_pct": 0.36,
+    "rationale": "The filter is stable and highly confident (P(bull)=0.94, no label changes, steadily rising), CAPM fit is modest but acceptable, and recent performance is strong. The only concern is the 36% AAPL concentration, so a cap at 0.36 is applied to prevent further single-name excess without otherwise tightening the model."
+  },
+  "usage": {
+    "input_tokens": 1044,
+    "output_tokens": 111,
+    "latency_ms": 3908.1
+  }
+}

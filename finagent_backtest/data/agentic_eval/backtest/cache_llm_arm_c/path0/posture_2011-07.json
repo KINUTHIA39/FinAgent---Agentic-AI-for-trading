@@ -1,0 +1,18 @@
+{
+  "posture": {
+    "cap_pos": null,
+    "defensive_cap": null,
+    "sizing": "score_weighted",
+    "regime_mult": null,
+    "reduce_only": false,
+    "halt": false,
+    "flagged": [
+      "JPM",
+      "NVDA"
+    ]
+  },
+  "used_fallback": false,
+  "session_sha256": "f136e8dd3efe010a32def0fb4b45246f56d3ed39c765ccd61c0f83a80aa5073b",
+  "n_nodes": 7,
+  "cached_at": "2026-09-03T15:22:46.875028+00:00"
+}

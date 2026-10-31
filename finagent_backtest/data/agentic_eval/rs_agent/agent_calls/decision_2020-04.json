@@ -1,0 +1,25 @@
+{
+  "date": "2020-04",
+  "model": "claude-sonnet-4-6",
+  "briefing": "## RS allocation cycle 2020-04\n\nYou are setting the decision parameters for a regime-switching optimal\nportfolio (Markose & Yang). The optimiser itself is fixed and will run\nwhatever you specify. Your job is to judge how far the model should be\ntrusted this month, given the diagnostics below.\n\n### Regime filter\n- Label this month: **bear**\n- P(bull) now: 0.08\n- P(bull) last 6 months (oldest first): 0.97, 0.97, 0.97, 0.76, 0.06, 0.08\n- Label changes in that window: 1\n\n### Conditional moments the optimiser would use (Eqs. 15-16)\n- If bull: mean +0.884%/mo, sd 4.07%/mo\n- If bear: mean -1.010%/mo, sd 5.34%/mo\n- Separation between the two states: 1.895 percentage points of monthly mean\n\n### Estimation health (CAPM, point-in-time)\n- Months of history used: 183\n- Mean R-squared across the eight stocks: 0.32\n- Beta range: 0.59 to 1.60\n- Largest beta move since last month: AMZN -0.07\n\n### What the optimiser wants before any cap\n- Largest single position: AAPL at 9%\n- Gross exposure: 18%\n- Names above 20%: 0\n\n### How this model's recent decisions turned out\n- Last 12 months: mean +2.13%/mo, 8 of 12 positive\n- Most recent month: -0.30%\n\n### Decide\nSet `gamma` (higher is more risk averse), `regime_treatment`\n(`hard_label` follows the filter, `probability_blend` weights both\nstates by P(bull)), and `max_position_pct` (a fraction; 1.00 is no cap).\nReply with the JSON object only.",
+  "raw_text": "{\"gamma\":6,\"regime_treatment\":\"hard_label\",\"max_position_pct\":1.0,\"rationale\":\"The filter is highly confident in the bear regime (P(bull)=0.08) with a clean single transition, and the optimiser's output is already conservative (18% gross, max 9% AAPL, no names above 20%). Classical defaults are appropriate; no diagnostic flags warrant deviation.\"}",
+  "raw_parsed": {
+    "gamma": 6,
+    "regime_treatment": "hard_label",
+    "max_position_pct": 1.0,
+    "rationale": "The filter is highly confident in the bear regime (P(bull)=0.08) with a clean single transition, and the optimiser's output is already conservative (18% gross, max 9% AAPL, no names above 20%). Classical defaults are appropriate; no diagnostic flags warrant deviation."
+  },
+  "accepted": true,
+  "reject_reason": "",
+  "posture": {
+    "gamma": 6.0,
+    "regime_treatment": "hard_label",
+    "max_position_pct": 1.0,
+    "rationale": "The filter is highly confident in the bear regime (P(bull)=0.08) with a clean single transition, and the optimiser's output is already conservative (18% gross, max 9% AAPL, no names above 20%). Classical defaults are appropriate; no diagnostic flags warrant deviation."
+  },
+  "usage": {
+    "input_tokens": 1045,
+    "output_tokens": 96,
+    "latency_ms": 6349.0
+  }
+}

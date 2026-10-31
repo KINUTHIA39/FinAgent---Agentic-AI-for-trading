@@ -1,0 +1,25 @@
+{
+  "date": "2024-05",
+  "model": "claude-sonnet-4-6",
+  "briefing": "## RS allocation cycle 2024-05\n\nYou are setting the decision parameters for a regime-switching optimal\nportfolio (Markose & Yang). The optimiser itself is fixed and will run\nwhatever you specify. Your job is to judge how far the model should be\ntrusted this month, given the diagnostics below.\n\n### Regime filter\n- Label this month: **bull**\n- P(bull) now: 0.95\n- P(bull) last 6 months (oldest first): 0.93, 0.96, 0.96, 0.97, 0.93, 0.95\n- Label changes in that window: 0\n\n### Conditional moments the optimiser would use (Eqs. 15-16)\n- If bull: mean +0.884%/mo, sd 4.07%/mo\n- If bear: mean -1.010%/mo, sd 5.34%/mo\n- Separation between the two states: 1.895 percentage points of monthly mean\n\n### Estimation health (CAPM, point-in-time)\n- Months of history used: 232\n- Mean R-squared across the eight stocks: 0.34\n- Beta range: 0.57 to 1.71\n- Largest beta move since last month: GOOGL -0.01\n\n### What the optimiser wants before any cap\n- Largest single position: AAPL at 32%\n- Gross exposure: 100%\n- Names above 20%: 1\n\n### How this model's recent decisions turned out\n- Last 12 months: mean +3.64%/mo, 9 of 12 positive\n- Most recent month: -1.68%\n\n### Decide\nSet `gamma` (higher is more risk averse), `regime_treatment`\n(`hard_label` follows the filter, `probability_blend` weights both\nstates by P(bull)), and `max_position_pct` (a fraction; 1.00 is no cap).\nReply with the JSON object only.",
+  "raw_text": "{\"gamma\":6,\"regime_treatment\":\"hard_label\",\"max_position_pct\":0.32,\"rationale\":\"The filter is extremely stable (P(bull)=0.95 with zero label changes over six months), state separation is modest but adequate, and CAPM fit is average across names. The only concern is AAPL at 32%, which is a concentrated single-name bet; a soft cap at 0.32 allows the optimiser's top conviction while preventing runaway concentration without overriding its signal.\"}",
+  "raw_parsed": {
+    "gamma": 6,
+    "regime_treatment": "hard_label",
+    "max_position_pct": 0.32,
+    "rationale": "The filter is extremely stable (P(bull)=0.95 with zero label changes over six months), state separation is modest but adequate, and CAPM fit is average across names. The only concern is AAPL at 32%, which is a concentrated single-name bet; a soft cap at 0.32 allows the optimiser's top conviction while preventing runaway concentration without overriding its signal."
+  },
+  "accepted": true,
+  "reject_reason": "",
+  "posture": {
+    "gamma": 6.0,
+    "regime_treatment": "hard_label",
+    "max_position_pct": 0.32,
+    "rationale": "The filter is extremely stable (P(bull)=0.95 with zero label changes over six months), state separation is modest but adequate, and CAPM fit is average across names. The only concern is AAPL at 32%, which is a concentrated single-name bet; a soft cap at 0.32 allows the optimiser's top conviction while preventing runaway concentration without overriding its signal."
+  },
+  "usage": {
+    "input_tokens": 1044,
+    "output_tokens": 120,
+    "latency_ms": 4325.0
+  }
+}

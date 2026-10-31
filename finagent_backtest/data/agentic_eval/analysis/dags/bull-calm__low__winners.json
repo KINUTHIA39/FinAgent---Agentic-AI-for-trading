@@ -1,0 +1,235 @@
+{
+  "source": "llm",
+  "used_fallback": false,
+  "nodes": [
+    {
+      "id": "data_fetch_1",
+      "type": "data_fetch",
+      "agent": "DataAgent",
+      "params": {
+        "symbols": [
+          "AAPL",
+          "MSFT",
+          "NVDA",
+          "JPM",
+          "AMZN",
+          "GOOGL",
+          "XOM",
+          "JNJ"
+        ],
+        "cycle_id": "exp_bull-calm|low|winners",
+        "timestamp": "2026-06-25T17:20:50Z",
+        "fields": [
+          "OHLCV",
+          "market_state"
+        ]
+      }
+    },
+    {
+      "id": "feature_1",
+      "type": "feature",
+      "agent": "FeatureAgent",
+      "params": {
+        "symbols": [
+          "AAPL",
+          "MSFT",
+          "NVDA",
+          "JPM",
+          "AMZN",
+          "GOOGL",
+          "XOM",
+          "JNJ"
+        ],
+        "indicators": [
+          "RSI",
+          "SMA"
+        ],
+        "rsi_period": 14,
+        "sma_periods": [
+          20,
+          50,
+          200
+        ]
+      }
+    },
+    {
+      "id": "signal_1",
+      "type": "signal",
+      "agent": "AlphaAgent",
+      "params": {
+        "candidates": [
+          {
+            "symbol": "AAPL",
+            "signal": "BUY",
+            "rsi": 70.7,
+            "score": 0.41,
+            "win_rate": 0.58
+          },
+          {
+            "symbol": "MSFT",
+            "signal": "BUY",
+            "rsi": 37.9,
+            "score": 0.33,
+            "win_rate": 0.54
+          },
+          {
+            "symbol": "NVDA",
+            "signal": "BUY",
+            "rsi": 45.0,
+            "score": 0.29,
+            "win_rate": 0.54
+          },
+          {
+            "symbol": "JPM",
+            "signal": "BUY",
+            "rsi": 37.2,
+            "score": 0.22,
+            "win_rate": 0.58
+          },
+          {
+            "symbol": "AMZN",
+            "signal": "BUY",
+            "rsi": 27.9,
+            "score": 0.18,
+            "win_rate": 0.52
+          },
+          {
+            "symbol": "GOOGL",
+            "signal": "BUY",
+            "rsi": 24.0,
+            "score": 0.14,
+            "win_rate": 0.57
+          },
+          {
+            "symbol": "XOM",
+            "signal": "BUY",
+            "rsi": 60.5,
+            "score": 0.09,
+            "win_rate": 0.52
+          },
+          {
+            "symbol": "JNJ",
+            "signal": "BUY",
+            "rsi": 78.5,
+            "score": 0.05,
+            "win_rate": 0.53
+          }
+        ],
+        "regime": "bull-calm",
+        "p_bull": 0.85,
+        "historical_context": {
+          "AAPL": {
+            "win_rate": 0.73,
+            "avg_pnl": 1240,
+            "slippage_bps": 4.1,
+            "confidence": 1.18
+          },
+          "MSFT": {
+            "win_rate": 0.68,
+            "avg_pnl": 980,
+            "slippage_bps": 3.7,
+            "confidence": 1.12
+          },
+          "NVDA": {
+            "win_rate": 0.71,
+            "avg_pnl": 2310,
+            "slippage_bps": 6.0,
+            "confidence": 1.15
+          }
+        },
+        "score_threshold": 0.1,
+        "top_n": 5
+      }
+    },
+    {
+      "id": "risk_1",
+      "type": "risk",
+      "agent": "RiskAgent",
+      "params": {
+        "nav": 1000000.0,
+        "cash": 700000.0,
+        "open_positions": 5,
+        "daily_pnl_pct": 0.01,
+        "var_confidence": 0.95,
+        "max_position_exposure_pct": 0.1,
+        "max_portfolio_exposure_pct": 0.4,
+        "regime": "bull-calm",
+        "slippage_bps_map": {
+          "AAPL": 4.1,
+          "MSFT": 3.7,
+          "NVDA": 6.0,
+          "JPM": 5.0,
+          "AMZN": 5.5,
+          "GOOGL": 5.0,
+          "XOM": 4.5,
+          "JNJ": 4.0
+        }
+      }
+    },
+    {
+      "id": "portfolio_1",
+      "type": "portfolio",
+      "agent": "PortfolioAgent",
+      "params": {
+        "nav": 1000000.0,
+        "cash": 700000.0,
+        "sizing_method": "score_weighted",
+        "max_new_positions": 3,
+        "max_position_size_pct": 0.08,
+        "regime_multiplier": 1.1,
+        "use_historical_confidence": true
+      }
+    },
+    {
+      "id": "execution_1",
+      "type": "execution",
+      "agent": "ExecutionAgent",
+      "params": {
+        "order_type": "LIMIT",
+        "time_in_force": "DAY",
+        "slippage_aware": true,
+        "cycle_id": "exp_bull-calm|low|winners",
+        "timestamp": "2026-06-25T17:20:50Z"
+      }
+    },
+    {
+      "id": "audit_1",
+      "type": "audit",
+      "agent": "AuditAgent",
+      "params": {
+        "cycle_id": "exp_bull-calm|low|winners",
+        "timestamp": "2026-06-25T17:20:50Z",
+        "nav": 1000000.0,
+        "daily_pnl_pct": 0.01,
+        "regime": "bull-calm",
+        "record_to_knowledge_graph": true
+      }
+    }
+  ],
+  "edges": [
+    {
+      "src": "data_fetch_1",
+      "dst": "feature_1"
+    },
+    {
+      "src": "feature_1",
+      "dst": "signal_1"
+    },
+    {
+      "src": "signal_1",
+      "dst": "risk_1"
+    },
+    {
+      "src": "risk_1",
+      "dst": "portfolio_1"
+    },
+    {
+      "src": "portfolio_1",
+      "dst": "execution_1"
+    },
+    {
+      "src": "execution_1",
+      "dst": "audit_1"
+    }
+  ]
+}

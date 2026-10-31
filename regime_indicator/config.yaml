@@ -1,0 +1,240 @@
+# Agentic AI vs Hamilton two-state regime detection — US equities.
+# Single source of truth. Nothing hardcodes a date, ticker or seed.
+
+run:
+  name: equity_regime_contest
+  seed: 20260827
+  results_dir: results
+
+# ---------------------------------------------------------------- universe
+universe:
+  # Single index. The SPX/NDX divergence flag in the original plan is retired
+  # with it; VIX has full history to 1990 so there is no coverage gap.
+  index: "^GSPC"
+  index_name: SPX
+  vol_index: "^VIX"
+  # These are NEWS FILTER KEYS ONLY. With the portfolio layer out of scope they
+  # are never held, so split adjustment and universe-selection bias do not
+  # apply. They exist to pick articles out of FNSPID.
+  # Filter keys into the news corpus only -- never held, never priced.
+  # Alphabet is GOOG in FNSPID, not GOOGL: probing the sorted table around
+  # "GOOG" returns GOLD, GOLF, GOOD, GOODN, GOOG and no GOOGL at all.
+  # JPM dropped: FNSPID holds exactly 10 JPM articles in the whole 23 GB.
+  # Verified by enumerating every J symbol in the tagged tables --
+  # JNJ(2928) JNPR(1393) ... JPM(10) JPMV(1) -- so the block is complete, not
+  # truncated. In the same region JCP has 2,516 and JBLU 1,555; the corpus is
+  # built from Nasdaq-sourced feeds and barely covers the large NYSE financials.
+  # CONSEQUENCE: the news panel has no bank. The credit-conditions agent works
+  # from FRED spreads alone (BAA10Y, T10Y3M, NFCI) with no news corroboration.
+  news_tickers: [AAPL, MSFT, NVDA, AMZN, GOOG, XOM, JNJ]
+  # Index-level news. FNSPID has NO index symbols -- SPX, GSPC, NDX and IXIC are
+  # absent from both tagged tables -- so index news arrives only via ETF
+  # tickers. SPY covers 2021-12 on; QQQ reaches back to 2011-03 and is the
+  # denser of the two. IWM, DIA and the minor S&P ETFs were checked and
+  # rejected: IWM is almost entirely templated price checks, the rest are thin.
+  # These blocks pass through news.drop_index_noise() -- see that function for
+  # why price restatements are excluded as well as fund plumbing.
+  index_news_tickers: [SPY, QQQ]
+
+data:
+  start: "2000-01-01"
+  end: "2025-12-31"
+  forward_fill: false          # a fabricated flat day reads as a calm regime
+  drop_incomplete_days: true
+  cross_asset_ffill_limit: 5   # context series only; never the HMM inputs
+
+sample:
+  burn_in_start: "2000-01-01"
+  burn_in_end: "2004-12-31"    # fitted on, never scored
+  # FNSPID ends in 2023. Every arm is scored on the identical window so that
+  # C-B and B-A carry no sample-length confound. Arms A and B are additionally
+  # extended to 2025 and reported separately as robustness.
+  score_start: "2005-01-01"
+  score_end: "2023-12-31"
+  extended_end: "2025-12-31"
+  refit_frequency: annual
+
+# ---------------------------------------------------------------- features
+features:
+  standardization: expanding    # NEVER full-sample; the classic silent leak
+  min_standardize_obs: 250
+  realized_windows: [5, 20, 60]
+  drawdown_window: 252
+  # Four, not the plan's five. The VIX term-structure ratio is dropped: Yahoo's
+  # ^VIX3M / ^VIX9D / ^VIX6M all return a single row, and FRED's VXVCLS only
+  # begins 2007-12-04 -- after the scoring start. The variance risk premium
+  # already carries much of the same stress signal, and VIX/VXV is handed to
+  # the volatility agent from 2008 instead, where a missing value is simply
+  # reported uninformative.
+  hmm_features:
+    - log_return
+    - realized_vol_20d
+    - drawdown_from_252d_high
+    - variance_risk_premium
+
+# ---------------------------------------------------------------- detector
+detector:
+  n_states: 3
+  covariance_type: full
+  n_restarts: 10          # hmmlearn has NO n_init; the restart loop is manual
+  n_iter: 500
+  tol: 1.0e-4
+  scoring: filtered       # forward algorithm only; never predict()/Viterbi
+  state_mapping:
+    rule: highest_mean_drawdown_is_bear_stress
+  model_selection_table: [2, 3, 4, 5, 6]
+  # Hamilton emits two states, so a like-for-like comparison needs Arms B and C
+  # collapsed to two as well (plan section 8).
+  report_two_state_collapse: true
+
+# ---------------------------------------------------------------- benchmark
+benchmark:
+  # Markose Eq. 4 is r_t = mu(s_t) + sigma(s_t) eps_t -- a switching mean and
+  # variance with NO autoregressive term. The plan's MarkovAutoregression(
+  # order=4) would add four lags the lecture never specifies.
+  model: MarkovRegression
+  k_regimes: 2
+  trend: c
+  switching_variance: true
+  input: log_return
+  probabilities: filtered   # HARD CONSTRAINT: never smoothed
+  two_state_mapping: split_low_vol
+
+# ---------------------------------------------------------------- taxonomy
+regimes:
+  states: [bull_quiet, bull_volatile, bear_stress]
+  display:
+    bull_quiet: "Bull, quiet"
+    bull_volatile: "Bull, volatile"
+    bear_stress: "Bear, stressed"
+
+# ---------------------------------------------------------------- ground truth
+target:
+  # Primary. Mechanical and non-circular: computed from price alone, never from
+  # a model, so it favours no arm.
+  method: forward_vol_terciles
+  forward_window: 20
+  tercile_basis: expanding
+  # Secondary, reported as robustness. If the two agree the result is robust;
+  # if they disagree that is itself informative.
+  secondary:
+    method: drawdown_state
+    thresholds: {bull_quiet: 0.05, bull_volatile: 0.10}
+
+# ---------------------------------------------------------------- data sources
+sources:
+  yahoo:
+    index: "^GSPC"
+    vix: "^VIX"
+    vvix: "^VVIX"        # 2007-01-03 onward; agent input only
+    skew: "^SKEW"
+    spy: SPY
+    rsp: RSP             # RSP/SPY breadth ratio, 2003 onward
+  fred:
+    vix: VIXCLS
+    nfci: NFCI           # weekly, lag to publication
+    # ICE BofA OAS (BAMLH0A0HYM2 / BAMLC0A0CM) is licence-truncated to a
+    # rolling 3-year window on FRED -- verified again 2026-08-27. BAA10Y runs
+    # from 1990 and replaces it.
+    credit_spread: BAA10Y
+    term_spread: T10Y3M
+  cboe:
+    equity_put_call: "https://cdn.cboe.com/resources/options/volume_and_call_put_ratios/indexpcarchive.csv"
+  rejected:
+    - "^VIX3M / ^VIX9D / ^VIX6M — Yahoo returns a single row"
+    - "VXVCLS — FRED, starts 2007-12-04, after the scoring window opens"
+    - "BAMLH0A0HYM2 / BAMLC0A0CM — licence-truncated to 3 years"
+
+publication_lags:              # look-ahead traps, in business days
+  aaii: 1
+  naaim: 1
+  nfci: 5                      # weekly, published Wednesday for the prior week
+
+# ---------------------------------------------------------------- news
+news:
+  dataset: FNSPID
+  url: "https://huggingface.co/datasets/Zihan1004/FNSPID/resolve/main/Stock_news/nasdaq_exteral_data.csv"
+  size_gb: 23.23
+  # Streamed and filtered, never downloaded whole.
+  stream: true
+  advertised_coverage: "1999-2023"
+  # MEASURED coverage is far narrower, and it constrains what Arm C can claim.
+  # Probing byte offsets showed the file is three concatenated tables:
+  #   [0, 17.50 GB)      ticker-tagged, numeric row index, sorted A->Z
+  #   [17.50, 17.84 GB)  ticker-tagged, EMPTY row index, sorted A->Z again
+  #   [17.84, 23.23 GB)  UNTAGGED general news, no ticker, ~2000-2019
+  # Both tagged tables are read (missing the second one capped an earlier fetch
+  # at 22.3% day coverage with nothing before 2019). The untagged table is
+  # deliberately skipped: it cannot be attributed to any ticker, and sampling
+  # found its first ~37% is Russian-language lenta.ru general news, the rest
+  # Reuters/Bloomberg wire filler (press releases, box office, bond notices).
+  # See measured_coverage below, written by src/news.py.
+  skip_tickers_without_news: true
+  # Articles published at or after 16:00 ET belong to the NEXT trading day.
+  # Getting this wrong by one day manufactures a spectacular fake result.
+  market_close_et: "16:00"
+  use_bundled_sentiment: false   # FNSPID's labels are ChatGPT-generated
+  use_bundled_prices: false      # forward-filled across holidays
+  zero_news_days: exponential_decay
+  decay_half_life_days: 3
+  smoothing_ewma_days: 5
+  # Trailing window for the article-volume z-score. Raw counts track
+  # corpus growth, not market stress, so agents see the z-score instead.
+  volume_baseline_days: 252
+
+sentiment:
+  finbert_model: ProsusAI/finbert
+  # Label order MUST be read from model.config.id2label; assuming it silently
+  # inverts every score.
+  verify_label_order: true
+  scope: headlines_only          # 512-token limit; bodies are inconsistent
+  batch_size: 64
+  lm_dictionary_url: "https://sraf.nd.edu/loughranmcdonald-master-dictionary/"
+
+# ---------------------------------------------------------------- agents
+agents:
+  enabled: true
+  model: claude-sonnet-5
+  effort: low
+  concurrency: 8
+  cache: true
+  # The cross-index agent is retired with the second index.
+  panel: [volatility, market_sentiment, news_sentiment, credit_conditions]
+  critic: true
+  gate:
+    on_argmax_change: true
+    confidence_percentile: 5
+    prob_change_above: 0.20
+    window_around_change: 2
+  anonymise_dates: true
+  anonymise_index: true
+  contamination_ablation: true
+
+memory:
+  recent_labels: 60
+  recent_probabilities: 20
+  recent_features: 20
+  recent_sentiment: 20
+
+# ---------------------------------------------------------------- scoring
+scoring:
+  report_gated_subset: true
+  # Regime labels are heavily autocorrelated, so persistence is the honest bar.
+  # Climatology is reported too: on the FX build it was the floor neither arm
+  # cleared, and it is the check most studies omit.
+  skill_baselines: [persistence, climatology]
+  leakage_alarm_bss: 0.35
+  metrics: [brier, brier_skill_score, log_loss, reliability, murphy_decomposition,
+            cohens_kappa, episode_duration, label_turnover, false_alarms_per_year,
+            transition_lead_time]
+  significance: [diebold_mariano, stationary_bootstrap]
+
+ground_truth_episodes:
+  - {name: dotcom,        start: "2000-03-24", end: "2002-10-09"}
+  - {name: gfc,           start: "2007-10-09", end: "2009-03-09"}
+  - {name: aug_2011,      start: "2011-08-01", end: "2011-10-03"}
+  - {name: china_2015,    start: "2015-08-17", end: "2016-02-11"}
+  - {name: volmageddon,   start: "2018-02-01", end: "2018-02-09"}
+  - {name: q4_2018,       start: "2018-10-01", end: "2018-12-24"}
+  - {name: covid,         start: "2020-02-19", end: "2020-03-23"}
+  - {name: bear_2022,     start: "2022-01-03", end: "2022-10-12"}
